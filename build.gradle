@@ -4,7 +4,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-group 'com.fortify.ssc.parser.util'
+group 'com.fortify.ps.ssc.parser.util'
 
 apply plugin: 'java'
 
@@ -13,7 +13,7 @@ ext {
 }
 
 // project version
-version = '0.0.3-SNAPSHOT'
+version = '0.0.4'
 
 repositories {
     // repository with fortify artifacts
