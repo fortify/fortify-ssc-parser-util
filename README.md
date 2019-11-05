@@ -1,2 +1,3 @@
-# fortify-ssc-parser-util
-Generic utility classes for implementing SSC parser plugins
+# Fortify SSC Parser Plugin utility classes 
+This project provides various utility classes for implementing
+custom SSC parser plugins.

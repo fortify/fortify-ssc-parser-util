@@ -1,0 +1,122 @@
+plugins {
+    id 'maven-publish'
+    id 'java-library'
+    id "com.jfrog.bintray" version "1.8.4"
+}
+
+group 'com.fortify.ssc.parser.util'
+
+apply plugin: 'java'
+
+ext {
+    jacksonVersion = "2.8.4"
+}
+
+// project version
+version = '1.0'
+
+repositories {
+    // repository with fortify artifacts
+    maven {
+        url  "http://dl.bintray.com/fortify/maven-public"
+    }
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    // dependencies provided by plugin runtime
+    compileOnly 'com.fortify.plugin:plugin-api:1.0.1'
+    compileOnly 'org.slf4j:slf4j-api:1.7.21'
+
+    // plugin specific dependencies
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "$jacksonVersion") { transitive = false }
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "$jacksonVersion") { transitive = false }
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "$jacksonVersion") { transitive = false }
+    compile(group: 'org.apache.commons', name: 'commons-lang3', version: "3.9") { transitive = false }
+    compile(group: 'commons-codec', name: 'commons-codec', version: '1.13') { transitive = false }
+    compile(group: 'commons-io', name: 'commons-io', version: '2.6') { transitive = false }
+    compile(group: 'org.mapdb', name: 'mapdb', version: '3.0.7') { transitive = true }
+    
+    //testImplementation 'org.junit.platform:junit-jupiter-api:5.3.1'
+    
+    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1')
+    testImplementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: "1.1.0")
+    testRuntimeOnly(group: 'org.junit.jupiter', name:'junit-jupiter-engine', version: '5.3.1')
+    testRuntimeOnly(group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1')
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task myjavadoc(type: Javadoc) {
+    failOnError = false
+}
+
+task javadocJar(type: Jar) {
+    from myjavadoc
+    archiveClassifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'SSC Parser Utility Classes'
+                description = 'Utility classes for implementing SSC Parser Plugins'
+                url = 'https://github.com/fortify-ps/fortify-ssc-parser-util'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'rsenden'
+                        name = 'Ruud Senden'
+                        email = 'ruud.senden@microfocus.com'
+                    }
+                }
+                scm {
+                    developerConnection = 'scm:git:https://github.com/fortify-ps/fortify-ssc-parser-util.git'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = "$buildDir/repo"
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['mavenJava'] 
+    pkg {
+        repo = 'maven'
+        name = 'fortify-ssc-parser-util'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/fortify-ps/fortify-ssc-parser-util.git'
+        userOrg = 'fortify-ps'
+    }
+}
+
