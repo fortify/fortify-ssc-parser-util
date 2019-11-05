@@ -13,7 +13,7 @@ ext {
 }
 
 // project version
-version = '0.0.1'
+version = '0.0.2'
 
 repositories {
     // repository with fortify artifacts
@@ -39,7 +39,6 @@ dependencies {
     compile(group: 'org.apache.commons', name: 'commons-lang3', version: "3.9") { transitive = false }
     compile(group: 'commons-codec', name: 'commons-codec', version: '1.13') { transitive = false }
     compile(group: 'commons-io', name: 'commons-io', version: '2.6') { transitive = false }
-    compile(group: 'org.mapdb', name: 'mapdb', version: '3.0.7') { transitive = true }
     
     //testImplementation 'org.junit.platform:junit-jupiter-api:5.3.1'
     
