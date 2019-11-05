@@ -35,10 +35,10 @@ import com.fortify.plugin.api.ScanParsingException;
 import com.fortify.util.io.Region;
 import com.fortify.util.json.AbstractStreamingJsonParser;
 
-public class ScanDataStreamingJsonParser extends AbstractStreamingJsonParser<ScanDataStreamingJsonParser> {
+public abstract class AbstractScanDataStreamingJsonParser<T extends AbstractScanDataStreamingJsonParser<T>> extends AbstractStreamingJsonParser<T> {
 	private final List<String> supportedExtensions = Collections.emptyList();
 	
-	public ScanDataStreamingJsonParser(String supportedExtension, String... supportedExtensions) {
+	public AbstractScanDataStreamingJsonParser(String supportedExtension, String... supportedExtensions) {
 		this.supportedExtensions.add(supportedExtension);
 	    this.supportedExtensions.addAll(Arrays.asList(supportedExtensions));
 	}
