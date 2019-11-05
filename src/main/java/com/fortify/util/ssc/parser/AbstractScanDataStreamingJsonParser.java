@@ -26,8 +26,8 @@ package com.fortify.util.ssc.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.fortify.plugin.api.ScanData;
@@ -36,7 +36,7 @@ import com.fortify.util.io.Region;
 import com.fortify.util.json.AbstractStreamingJsonParser;
 
 public abstract class AbstractScanDataStreamingJsonParser<T extends AbstractScanDataStreamingJsonParser<T>> extends AbstractStreamingJsonParser<T> {
-	private final List<String> supportedExtensions = Collections.emptyList();
+	private final List<String> supportedExtensions = new ArrayList<>();
 	
 	public AbstractScanDataStreamingJsonParser(String supportedExtension, String... supportedExtensions) {
 		this.supportedExtensions.add(supportedExtension);
