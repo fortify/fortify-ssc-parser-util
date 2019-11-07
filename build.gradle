@@ -23,7 +23,9 @@ scm {
 }
 
 // Project version based on SCM information
-version = scm.version.version
+// Reg-ex replace to revert special handling of scmversion plugin
+// when checking out specific commit
+version = scm.version.version.replaceFirst(/rev\.id\.[0-9a-f]+-/, "")
 
 repositories {
     // repository with fortify artifacts
