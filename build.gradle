@@ -2,18 +2,28 @@ plugins {
     id 'maven-publish'
     id 'java-library'
     id "com.jfrog.bintray" version "1.8.4"
+    id "com.jfrog.artifactory" version "4.10.0"
+    id 'com.intershop.gradle.scmversion' version '6.0.0'
 }
 
 group 'com.fortify.ps.ssc.parser.util'
 
 apply plugin: 'java'
+sourceCompatibility = 1.8
 
 ext {
     jacksonVersion = "2.8.4"
 }
 
-// project version
-version = '0.0.4'
+scm {
+    version {
+        type = 'threeDigits'
+        initialVersion = '1.0.0'
+    }
+}
+
+// Project version based on SCM information
+version = scm.version.version
 
 repositories {
     // repository with fortify artifacts
@@ -68,14 +78,6 @@ publishing {
             from components.java
             artifact sourcesJar
             artifact javadocJar
-            versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
-                }
-                usage('java-runtime') {
-                    fromResolutionResult()
-                }
-            }
             pom {
                 name = 'SSC Parser Utility Classes'
                 description = 'Utility classes for implementing SSC Parser Plugins'
@@ -107,7 +109,8 @@ publishing {
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
-    publications = ['mavenJava'] 
+    publications = ['mavenJava']
+    publish = true
     pkg {
         repo = 'maven'
         name = 'fortify-ssc-parser-util'
@@ -115,5 +118,25 @@ bintray {
         vcsUrl = 'https://github.com/fortify-ps/fortify-ssc-parser-util.git'
         userOrg = 'fortify-ps'
     }
+}
+
+artifactory {
+    contextUrl = 'http://oss.jfrog.org'
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = System.getProperty('bintray.user')
+            password = System.getProperty('bintray.key')
+        }
+        defaults {
+            publications('mavenJava')
+            publishArtifacts = true
+            publishPom = true
+        }
+    }
+    resolve {
+        repoKey = 'jcenter'
+    }
+    clientConfig.info.setBuildNumber(System.getProperty('build.number'))
 }
 
