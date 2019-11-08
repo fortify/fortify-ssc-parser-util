@@ -33,7 +33,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortify.plugin.api.ScanParsingException;
 import com.fortify.util.json.JsonHandler;
-import com.fortify.util.json.ObjectMapperHelper;
+import com.fortify.util.json.DefaultObjectMapperFactory;
 
 /**
  * <p>This {@link JsonHandler} implementation reads a JSON object
@@ -83,7 +83,7 @@ public final class AddJsonPropertyValueToMapJsonHandler<T> implements JsonHandle
 	}
 	
 	public AddJsonPropertyValueToMapJsonHandler(Map<String,T> map, Class<T> clazz) {
-		this(map, clazz, ObjectMapperHelper.getDefaultObjectMapper());
+		this(map, clazz, DefaultObjectMapperFactory.getDefaultObjectMapper());
 	}
 	
 	public AddJsonPropertyValueToMapJsonHandler(Map<String,T> map, Class<T> clazz, ObjectMapper objectMapper) {

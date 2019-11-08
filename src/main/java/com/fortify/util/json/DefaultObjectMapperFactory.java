@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDelegatingDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fortify.util.jackson.DateConverter;
 
-public class ObjectMapperHelper {
+public class DefaultObjectMapperFactory {
 	private static final ObjectMapper DEFAULT_OBJECT_MAPPER = _getDefaultObjectMapper();
 	
 	public static final ObjectMapper getDefaultObjectMapper() {

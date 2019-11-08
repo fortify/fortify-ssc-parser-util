@@ -31,7 +31,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortify.plugin.api.ScanParsingException;
 import com.fortify.util.json.JsonHandler;
-import com.fortify.util.json.ObjectMapperHelper;
+import com.fortify.util.json.DefaultObjectMapperFactory;
 
 /**
  * This {@link JsonHandler} implementation reads the value that {@link JsonParser}
@@ -48,7 +48,7 @@ public final class JsonMapperHandler<T> implements JsonHandler {
 	private final ObjectMapper objectMapper; 
 	
 	public JsonMapperHandler(Consumer<T> consumer, Class<T> clazz) {
-		this(consumer, clazz, ObjectMapperHelper.getDefaultObjectMapper());
+		this(consumer, clazz, DefaultObjectMapperFactory.getDefaultObjectMapper());
 	}
 
 	public JsonMapperHandler(Consumer<T> consumer, Class<T> clazz, ObjectMapper objectMapper) {
