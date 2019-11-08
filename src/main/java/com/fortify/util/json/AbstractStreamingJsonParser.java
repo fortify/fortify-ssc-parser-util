@@ -38,7 +38,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.fortify.plugin.api.ScanParsingException;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortify.util.io.Region;
 import com.fortify.util.io.RegionInputStream;
 
@@ -53,12 +54,9 @@ import com.fortify.util.io.RegionInputStream;
  */
 public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJsonParser<T>> {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractStreamingJsonParser.class);
-	private static final JsonFactory JSON_FACTORY = new JsonFactory().disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
-	private static final Set<JsonToken> SET_START_OBJECT = new HashSet<>(Arrays.asList(JsonToken.START_OBJECT));
-	private static final Set<JsonToken> SET_START_ARRAY = new HashSet<>(Arrays.asList(JsonToken.START_ARRAY));
-	private static final Set<JsonToken> SET_START_OBJECT_OR_ARRAY = new HashSet<>(Arrays.asList(JsonToken.START_OBJECT, JsonToken.START_ARRAY));
 	private final Map<String, JsonHandler> pathToHandlerMap = new LinkedHashMap<>();
-	private Set<JsonToken> expectedStartTokens = SET_START_OBJECT;
+	private Set<JsonToken> expectedStartTokens = ExtendedJsonParser.SET_START_OBJECT;
+	private ObjectMapper objectMapper = DefaultObjectMapperFactory.getDefaultObjectMapper();
 	@SuppressWarnings("unchecked")
 	private T _this = (T)this;
 
@@ -69,6 +67,11 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	
 	public final T expectedStartTokens(JsonToken... jsonTokens) {
 		expectedStartTokens = new HashSet<>(Arrays.asList(jsonTokens));
+		return _this;
+	}
+	
+	public final T objectMapper(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
 		return _this;
 	}
 	
@@ -105,12 +108,17 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 			pathToHandlerMap.put(path, jsonParser->parseObjectOrArrayChildren(jsonParser, path));
 		}
 	}
+	
+	private final JsonFactory getJsonFactory() {
+		return new MappingJsonFactory(objectMapper)
+				.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
+	}
 
 	/**
 	 * Parse JSON contents retrieved from the given {@link InputStream} using
 	 * the previously configured handlers.
 	 */ 
-	public final void parse(InputStream inputStream) throws ScanParsingException, IOException {
+	public final void parse(InputStream inputStream) throws IOException {
 		parse(inputStream, null);
 	}
 	
@@ -118,12 +126,14 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	 * Parse JSON contents retrieved from the given {@link InputStream} object
 	 * for the given input region, using the previously configured handlers.
 	 */
-	public final void parse(InputStream inputStream, Region inputRegion) throws ScanParsingException, IOException {
-		try ( final InputStream content = new RegionInputStream(
-					inputStream, inputRegion, false);
-				final JsonParser jsonParser = JSON_FACTORY.createParser(content)) {
+	public final void parse(InputStream inputStream, Region inputRegion) throws IOException {
+		try ( final InputStream content = 
+					new RegionInputStream(inputStream, inputRegion, false);
+				final ExtendedJsonParser jsonParser = 
+					new ExtendedJsonParser(getJsonFactory().createParser(content))
+			) {
 			jsonParser.nextToken();
-			assertToken(jsonParser, expectedStartTokens);
+			jsonParser.assertToken(expectedStartTokens);
 			parse(jsonParser, "/");
 		}
 	}
@@ -140,10 +150,9 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	 * 
 	 * @param jsonParser
 	 * @param parentPath
-	 * @throws ScanParsingException
 	 * @throws IOException
 	 */
-	private final void parse(final JsonParser jsonParser, String parentPath) throws ScanParsingException, IOException {
+	private final void parse(final ExtendedJsonParser jsonParser, String parentPath) throws IOException {
 		JsonToken currentToken = jsonParser.getCurrentToken();
 		if ( currentToken != null && (currentToken==JsonToken.START_ARRAY || currentToken==JsonToken.START_OBJECT || currentToken.isScalarValue())) {
 			String currentPath = getPath(parentPath, jsonParser.getCurrentName());
@@ -153,7 +162,7 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 				LOG.debug("Handling "+currentPath);
 				handler.handle(jsonParser);
 			} else {
-				skipChildren(jsonParser);
+				jsonParser.skipChildren();
 			}
 		}
 	}
@@ -181,10 +190,9 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	 * 
 	 * @param jsonParser
 	 * @param currentPath
-	 * @throws ScanParsingException
 	 * @throws IOException
 	 */
-	private final void parseObjectOrArrayChildren(JsonParser jsonParser, String currentPath) throws ScanParsingException, IOException {
+	private final void parseObjectOrArrayChildren(ExtendedJsonParser jsonParser, String currentPath) throws IOException {
 		JsonToken currentToken = jsonParser.getCurrentToken();
 		if ( currentToken==JsonToken.START_OBJECT ) {
 			parseObjectProperties(jsonParser, currentPath);
@@ -198,10 +206,9 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	 * 
 	 * @param jsonParser
 	 * @param currentPath
-	 * @throws ScanParsingException
 	 * @throws IOException
 	 */
-	public final void parseObjectProperties(JsonParser jsonParser, String currentPath) throws ScanParsingException, IOException {
+	public final void parseObjectProperties(ExtendedJsonParser jsonParser, String currentPath) throws IOException {
 		parseChildren(jsonParser, currentPath, JsonToken.END_OBJECT);
 	}
 	
@@ -210,11 +217,10 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	 * 
 	 * @param jsonParser
 	 * @param currentPath
-	 * @throws ScanParsingException
 	 * @throws IOException
 	 */
-	public final void parseArrayEntries(JsonParser jsonParser, String currentPath) throws ScanParsingException, IOException {
-		parseChildren(jsonParser, currentPath, JsonToken.END_ARRAY);
+	public final void parseArrayEntries(ExtendedJsonParser jsonParser, String currentPath) throws IOException {
+		parseChildren(jsonParser, getPath(currentPath, "*"), JsonToken.END_ARRAY);
 	}
 	
 	/**
@@ -223,123 +229,11 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	 * @param jsonParser
 	 * @param currentPath
 	 * @param endToken
-	 * @throws ScanParsingException
 	 * @throws IOException
 	 */
-	private final void parseChildren(JsonParser jsonParser, String currentPath, JsonToken endToken) throws ScanParsingException, IOException {
+	private final void parseChildren(ExtendedJsonParser jsonParser, String currentPath, JsonToken endToken) throws IOException {
 		while (jsonParser.nextToken()!=endToken) {
 			parse(jsonParser, currentPath);
-		}
-	}
-	
-	/**
-	 * Assuming the given {@link JsonParser} instance is currently pointing at a JSON array,
-	 * this method will return the number of array entries.
-	 * 
-	 * @param jsonParser
-	 * @return
-	 * @throws ScanParsingException Thrown if the given JsonParser does not
-	 *         point at the start of an array
-	 * @throws IOException
-	 */
-	public static final int countArrayEntries(JsonParser jsonParser) throws ScanParsingException, IOException {
-		assertStartArray(jsonParser);
-		int result = 0;
-		while (jsonParser.nextToken()!=JsonToken.END_ARRAY) {
-			result++;
-			skipChildren(jsonParser);
-		}
-		return result;
-	}
-	
-	/**
-	 * Assuming the given {@link JsonParser} instance is currently pointing at a JSON object,
-	 * this method will return the number of object entries.
-	 * 
-	 * @param jsonParser
-	 * @return
-	 * @throws ScanParsingException Thrown if the given JsonParser does not
-	 *         point at the start of an object
-	 * @throws IOException
-	 */
-	public static final int countObjectEntries(JsonParser jsonParser) throws ScanParsingException, IOException {
-		assertStartObject(jsonParser);
-		int result = 0;
-		while (jsonParser.nextToken()!=JsonToken.END_OBJECT) {
-			result++;
-			skipChildren(jsonParser);
-		}
-		return result;
-	}
-	
-	/**
-	 * Get the region (start and end position) of the current JSON element.
-	 * 
-	 * @param jsonParser
-	 * @return
-	 * @throws ScanParsingException
-	 * @throws IOException
-	 */
-	public static final Region getObjectOrArrayRegion(JsonParser jsonParser) throws ScanParsingException, IOException {
-		assertStartObjectOrArray(jsonParser);
-		// TODO Do we need to take into account file encoding to determine number of bytes
-		//      for the '[' character?
-		long start = jsonParser.getCurrentLocation().getByteOffset()-"[".getBytes().length; 
-		jsonParser.skipChildren();
-		long end = jsonParser.getCurrentLocation().getByteOffset();
-		return new Region(start, end);
-	}
-	
-	/**
-	 * If the given {@link JsonParser} is currently pointing at a JSON object or array,
-	 * this method will skip all children of that object or array.
-	 * @param jsonParser
-	 * @throws IOException
-	 */
-	public static final void skipChildren(final JsonParser jsonParser) throws IOException {
-		switch (jsonParser.getCurrentToken()) {
-		case START_ARRAY:
-		case START_OBJECT:
-			LOG.trace("Skipping children");
-			jsonParser.skipChildren();
-			break;
-		default: break;
-		}
-	}
-	
-	/**
-	 * Assert that the given {@link JsonParser} is currently pointing at the start tag of a 
-	 * JSON array, throwing a {@link ScanParsingException} otherwise.
-	 * @param jsonParser
-	 * @throws ScanParsingException
-	 */
-	public static final void assertStartArray(final JsonParser jsonParser) throws ScanParsingException {
-		assertToken(jsonParser, SET_START_ARRAY);
-	}
-
-	/**
-	 * Assert that the given {@link JsonParser} is currently pointing at the start tag of a 
-	 * JSON object, throwing a {@link ScanParsingException} otherwise.
-	 * @param jsonParser
-	 * @throws ScanParsingException
-	 */
-	public static final void assertStartObject(final JsonParser jsonParser) throws ScanParsingException {
-		assertToken(jsonParser, SET_START_OBJECT);
-	}
-	
-	/**
-	 * Assert that the given {@link JsonParser} is currently pointing at the start tag of a 
-	 * JSON object or array, throwing a {@link ScanParsingException} otherwise.
-	 * @param jsonParser
-	 * @throws ScanParsingException
-	 */
-	public static final void assertStartObjectOrArray(final JsonParser jsonParser) throws ScanParsingException {
-		assertToken(jsonParser, SET_START_OBJECT_OR_ARRAY);
-	}
-	
-	public static final void assertToken(final JsonParser jsonParser, Set<JsonToken> expectedTokens) throws ScanParsingException {
-		if (!expectedTokens.contains(jsonParser.currentToken())) {
-			throw new ScanParsingException(String.format("Expected one of "+expectedTokens+" at %s", jsonParser.getTokenLocation()));
 		}
 	}
 }

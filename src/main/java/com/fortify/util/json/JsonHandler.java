@@ -27,7 +27,6 @@ package com.fortify.util.json;
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fortify.plugin.api.ScanParsingException;
 
 /**
  * Functional interface for handling the JSON element that the given
@@ -37,5 +36,5 @@ import com.fortify.plugin.api.ScanParsingException;
  */
 @FunctionalInterface
 public interface JsonHandler {
-    void handle(JsonParser jsonParser) throws ScanParsingException, IOException;
+    void handle(ExtendedJsonParser jsonParser) throws IOException;
 }

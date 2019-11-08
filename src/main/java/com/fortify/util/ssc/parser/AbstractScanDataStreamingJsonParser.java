@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.fortify.plugin.api.ScanData;
-import com.fortify.plugin.api.ScanParsingException;
 import com.fortify.util.io.Region;
 import com.fortify.util.json.AbstractStreamingJsonParser;
 
@@ -47,7 +46,7 @@ public abstract class AbstractScanDataStreamingJsonParser<T extends AbstractScan
 	 * Parse JSON contents retrieved from the given {@link ScanData} using
 	 * the previously configured handlers.
 	 */ 
-	public final void parse(ScanData scanData) throws ScanParsingException, IOException {
+	public final void parse(ScanData scanData) throws IOException {
 		parse(scanData, null);
 	}
 	
@@ -55,7 +54,7 @@ public abstract class AbstractScanDataStreamingJsonParser<T extends AbstractScan
 	 * Parse JSON contents retrieved from the given {@link ScanData} object
 	 * for the given input region, using the previously configured handlers.
 	 */
-	public final void parse(ScanData scanData, Region inputRegion) throws ScanParsingException, IOException {
+	public final void parse(ScanData scanData, Region inputRegion) throws IOException {
 		try ( final InputStream inputStream = scanData.getInputStream(fileName -> hasSupportedExtension(fileName)) ) {
 			parse(inputStream, inputRegion);
 		}
