@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,10 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	public final T handler(String path, JsonHandler handler) {
 		addHandlerAndParentHandlers(path, handler);
 		return _this;
+	}
+	
+	public final <V> T handler(String path, Class<V> clazz, Consumer<V> handler) {
+		return handler(path, jp->handler.accept(jp.readValueAs(clazz)));
 	}
 	
 	public final T expectedStartTokens(JsonToken... jsonTokens) {
