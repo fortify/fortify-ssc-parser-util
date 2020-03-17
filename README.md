@@ -1,23 +1,31 @@
 # Fortify SSC Parser Plugin utility library 
-This project provides various utility classes for implementing custom 
-SSC parser plugins. For now, this is mostly oriented at parser plugins 
-that need to parse JSON data, however in the future support for other
-input formats may be added.
 
-## Overview
+The **fortify-ssc-parser-util** project provides various utility classes 
+for implementing custom SSC parser plugins. For now, this is mostly oriented 
+at parser plugins that need to parse JSON data, however in the future support 
+for other input formats may be added.
+
 The main purpose of this project is to separate the technical aspects of 
-parsing JSON data from the functional logic for handling actual JSON contents.
+parsing JSON data, from the functional logic for handling actual JSON contents.
 As such, this project provides utility classes that handle the technical aspects
 of JSON parsing, such that actual parser plugins can focus on the functional logic
 for handling actual JSON contents.
 
-The following projects provide examples on how this library can be used:
+### Related links
 
-- https://github.com/fortify-ps/fortify-ssc-parser-owasp-dependency-check
-- https://github.com/fortify-ps/fortify-ssc-parser-sarif
-- (Not migrated to this library yet: https://github.com/fortify-ps/fortify-ssc-parser-sample)
+* **Automated builds**: https://travis-ci.com/github/fortify-ps/fortify-ssc-parser-util
+* **Maven Repositories**
+  * **Snapshots**: https://oss.jfrog.org/artifactory/oss-snapshot-local
+  * **Releases**: https://dl.bintray.com/fortify-ps/maven
+* **Sample Projects using fortify-client-api**
+  * https://github.com/fortify-ps/fortify-ssc-parser-owasp-dependency-check
+  * https://github.com/fortify-ps/fortify-ssc-parser-clair-rest
+  * https://github.com/fortify-ps/fortify-ssc-parser-clair-yair
+  * https://github.com/fortify-ps/fortify-ssc-parser-tenable-io-cs
 
-## Main library components
+## Usage
+
+### Main library components
 
 Following is a short overview of the main components provided by this library:
 
@@ -25,7 +33,7 @@ Following is a short overview of the main components provided by this library:
 
 TODO
 
-## Adding this project as a parser plugin dependency
+### Adding this project as a parser plugin dependency
 
 The Maven artifacts for releases of this project are provided through 
 JFrog Bintray. To use these artifacts, add the following repository
@@ -71,7 +79,9 @@ Dependency to be added to the Gradle `dependencies` closure, replacing
 ```
 
 
-## Build Environment
+## Information for developers
+
+### Build Environment
 
 This project is managed using the included gradle wrapper scripts.
 The commands listed in the following sections simply state `gradlew`
@@ -141,3 +151,7 @@ deploy the snapshot version to JFrog Artifactory.
 
 Tagging a release (see previous section) will also trigger a new build on [travis-ci.org],
 but the release version will be deployed to JFrog Bintray instead.  
+
+
+# Licensing
+See [LICENSE.TXT](LICENSE.TXT)
