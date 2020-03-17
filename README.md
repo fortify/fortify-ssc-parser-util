@@ -62,6 +62,13 @@ dependencies {
 }
 ```
 
+Note that most projects in the fortify-ps organization use the
+[repo-helper.gradle](https://github.com/fortify-ps/gradle-helpers/blob/1.0/repo-helper.gradle)
+Gradle helper script to configure repositories; that script uses
+slightly different repository settings than listed above in order to also 
+allow access to snapshot builds. See the https://github.com/fortify-ps/gradle-helpers 
+project for more information and other Gradle helper scripts.
+
 
 ## Information for library developers
 
@@ -86,7 +93,7 @@ the main project directory.
 * Build & publish:
   * `./gradlew clean build`: Clean and build the project
   * `./gradlew build`: Build the project without cleaning
-  * `./gradlew publish`: Publish the project to the local Maven repository, for use by other local projects
+  * `./gradlew publish`: Publish the project to the local Maven repository, for use by other local projects. Should usually only be done from a snapshot branch; see [Versioning](#versioning).
   * `./gradlew build`: Build the project without cleaning
 * Version management:
   * `./gradlew printProjectVersion`: Print the current version
