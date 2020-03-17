@@ -1,6 +1,7 @@
 #!/bin/bash
 
 projectName=fortify-ssc-parser-util
+# Scan the project as a module (SCA 19.2+ feature)
 scanOpts="-scan-module -Dcom.fortify.sca.UseSynchronousSerialization=true -Dcom.fortify.sca.ThreadCount=1 -Dcom.fortify.sca.DefaultAnalyzers=dataflow"
 
 set -x
@@ -14,5 +15,5 @@ sourceanalyzer -b ${projectName} -clean
 # build script to take appropriate measures if necessary
 sourceanalyzer -b ${projectName} gradle clean build -Pfortify
 
-# Scan the project as a module (SCA 19.2+ feature)
+# Scan the project using scan options specified in ${scanOpts}
 sourceanalyzer -b ${projectName} -f ${projectName}.fpr ${scanOpts}
