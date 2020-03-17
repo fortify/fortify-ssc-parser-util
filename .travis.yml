@@ -14,17 +14,17 @@ cache:
   
 stages:
   - name: build
-  - name: snapshot
-    if: tag IS blank
-  - name: release
+  - name: snapshotBranch
+    if: tag IS blank AND branch =~ /^(\d+.)+\d+-SNAPSHOT$/
+  - name: releaseTag
     if: tag IS present
     
 jobs:
   include:
     - stage: build
       script: /bin/sh ./gradlew build
-    - stage: snapshot
-      script: /bin/sh ./gradlew artifactoryPublish -x test -Dsnapshot=true -Dbintray.user=$BINTRAY_USER -Dbintray.key=$BINTRAY_KEY -Dbuild.number=$TRAVIS_BUILD_NUMBER
-    - stage: release
-      script: /bin/sh ./gradlew bintrayUpload -x test -Dbintray.user=$BINTRAY_USER -Dbintray.key=$BINTRAY_KEY -Dbuild.number=$TRAVIS_BUILD_NUMBER
+    - stage: snapshotBranch
+      script: /bin/sh ./gradlew "-PoverrideVersion=$TRAVIS_BRANCH" build publish artifactoryPublish -x test -Dsnapshot=true -Dbuild.number=$TRAVIS_BUILD_NUMBER
+    - stage: releaseTag
+      script: /bin/sh ./gradlew "-PoverrideVersion=$TRAVIS_TAG" build publish bintrayUpload -x test -Dbuild.number=$TRAVIS_BUILD_NUMBER
       
