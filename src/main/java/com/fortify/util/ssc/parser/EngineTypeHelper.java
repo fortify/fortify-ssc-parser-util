@@ -58,7 +58,6 @@ public class EngineTypeHelper {
 	private static final String _getEngineType() {
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
         try (InputStream inputStream = EngineTypeHelper.class.getClassLoader().getResourceAsStream("plugin.xml")) {
-        	domFactory.setValidating(true);
     		domFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             DocumentBuilder builder = domFactory.newDocumentBuilder();
 			Document dDoc = builder.parse(inputStream);
