@@ -43,7 +43,9 @@ public class RegionInputStream extends BoundedInputStream {
 	public RegionInputStream(InputStream in, Region region, boolean propagateClose) throws IOException {
 		super(in, region==null?-1:region.getEnd());
 		if ( region!=null ) {
-			skip(region.getStart());
+			if ( skip(region.getStart()) != region.getStart() ) {
+				throw new IllegalStateException("Number of actual bytes skipped doesn't equal request number of bytes to be skipped");
+			}
 		}
 		setPropagateClose(propagateClose);
 	}

@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.util.ssc.parser;
 
+import java.io.InputStream;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -55,9 +57,11 @@ public class EngineTypeHelper {
 	 */
 	private static final String _getEngineType() {
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-        try {
+        try (InputStream inputStream = EngineTypeHelper.class.getClassLoader().getResourceAsStream("plugin.xml")) {
+        	domFactory.setValidating(true);
+    		domFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             DocumentBuilder builder = domFactory.newDocumentBuilder();
-            Document dDoc = builder.parse(EngineTypeHelper.class.getClassLoader().getResourceAsStream("plugin.xml"));
+			Document dDoc = builder.parse(inputStream);
 
             XPath xPath = XPathFactory.newInstance().newXPath();
             return (String) xPath.evaluate("/plugin/issue-parser/engine-type/text()", dDoc, XPathConstants.STRING);
