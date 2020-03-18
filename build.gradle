@@ -23,6 +23,10 @@ apply from: "${gradleHelpersLocation}/version-helper.gradle"
 apply from: "${gradleHelpersLocation}/upload-mvn-helper.gradle"
 apply from: "${gradleHelpersLocation}/fortify-helper.gradle"
 
+apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 version = getProjectVersion()
 group = 'com.fortify.ssc.parser.util'
 
