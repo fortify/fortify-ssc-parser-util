@@ -12,8 +12,8 @@ ext {
 	dependencyVersion=[
 		fortify_plugin_api:  '1.0.1',
 		slf4j:               '1.7.21',
-		jackson:             '2.10.3',
-		commons_lang3:        '3.9',
+		jackson:             '2.8.4',
+		commons_lang3:       '3.9',
 		commons_codec:       '1.14',
 		commons_io:          '2.6'
 	]
