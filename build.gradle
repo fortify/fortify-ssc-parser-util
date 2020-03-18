@@ -7,7 +7,7 @@ plugins {
 }
 
 ext {
-	gradleHelpersLocation = "https://raw.githubusercontent.com/fortify-ps/gradle-helpers/master"
+	gradleHelpersLocation = "https://raw.githubusercontent.com/fortify-ps/gradle-helpers/1.0"
 	
 	dependencyVersion=[
 		fortify_plugin_api:  '1.0.1',
