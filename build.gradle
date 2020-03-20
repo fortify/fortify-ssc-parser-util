@@ -72,6 +72,7 @@ task sourcesJar(type: Jar) {
 
 task myjavadoc(type: Javadoc) {
 	source = sourceSets.main.allJava 
+	classpath = sourceSets.main.runtimeClasspath
 	failOnError = false
 }
 
