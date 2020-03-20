@@ -21,6 +21,9 @@ for handling actual JSON contents.
     * **Artifacts**: https://oss.jfrog.org/artifactory/oss-snapshot-local/com/fortify/ssc/parser/util/fortify-ssc-parser-util/
   * **Releases**: https://dl.bintray.com/fortify-ps/maven
     * **Artifacts**: https://dl.bintray.com/fortify-ps/maven/com/fortify/ssc/parser/util/fortify-ssc-parser-util/
+* **Maven Artifacts**
+  * **Snapshots**: https://oss.jfrog.org/artifactory/oss-snapshot-local/com/fortify/ssc/parser/util/fortify-ssc-parser-util/
+  * **Releases**: https://dl.bintray.com/fortify-ps/maven/com/fortify/ssc/parser/util/fortify-ssc-parser-util/    
 * **Sample Projects using fortify-client-api**
   * https://github.com/fortify-ps/fortify-ssc-parser-owasp-dependency-check
   * https://github.com/fortify-ps/fortify-ssc-parser-clair-rest
