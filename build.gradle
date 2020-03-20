@@ -71,7 +71,8 @@ task sourcesJar(type: Jar) {
 }
 
 task myjavadoc(type: Javadoc) {
-    failOnError = false
+	source = sourceSets.main.allJava 
+	failOnError = false
 }
 
 task javadocJar(type: Jar) {
