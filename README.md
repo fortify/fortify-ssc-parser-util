@@ -1,143 +1,135 @@
 # Fortify SSC Parser Plugin utility library 
-This project provides various utility classes for implementing custom 
-SSC parser plugins. For now, this is mostly oriented at parser plugins 
-that need to parse JSON data, however in the future support for other
-input formats may be added.
 
-## Overview
+The **fortify-ssc-parser-util** project provides various utility classes 
+for implementing custom SSC parser plugins. For now, this is mostly oriented 
+at parser plugins that need to parse JSON data, however in the future support 
+for other input formats may be added.
+
 The main purpose of this project is to separate the technical aspects of 
-parsing JSON data from the functional logic for handling actual JSON contents.
+parsing JSON data, from the functional logic for handling actual JSON contents.
 As such, this project provides utility classes that handle the technical aspects
 of JSON parsing, such that actual parser plugins can focus on the functional logic
 for handling actual JSON contents.
 
-The following projects provide examples on how this library can be used:
+### Related Links
 
-- https://github.com/fortify-ps/fortify-ssc-parser-owasp-dependency-check
-- https://github.com/fortify-ps/fortify-ssc-parser-sarif
-- (Not migrated to this library yet: https://github.com/fortify-ps/fortify-ssc-parser-sample)
+* **Branches**: https://github.com/fortify-ps/fortify-ssc-parser-util/branches  
+  Current development is usually done on latest snapshot branch, which may not be the default branch
+* **Automated builds**: https://travis-ci.com/github/fortify-ps/fortify-ssc-parser-util
+* **Maven Repositories**
+  * **Snapshots**: https://oss.jfrog.org/artifactory/oss-snapshot-local
+  * **Releases**: https://dl.bintray.com/fortify-ps/maven
+* **Maven Artifacts**
+  * **Snapshots**: https://oss.jfrog.org/artifactory/oss-snapshot-local/com/fortify/ssc/parser/util/fortify-ssc-parser-util/
+  * **Releases**: https://dl.bintray.com/fortify-ps/maven/com/fortify/ssc/parser/util/fortify-ssc-parser-util/    
+* **Sample Projects using fortify-client-api**
+  * https://github.com/fortify-ps/fortify-ssc-parser-owasp-dependency-check
+  * https://github.com/fortify-ps/fortify-ssc-parser-clair-rest
+  * https://github.com/fortify-ps/fortify-ssc-parser-clair-yair
+  * https://github.com/fortify-ps/fortify-ssc-parser-tenable-io-cs
 
-## Main library components
+## Usage
 
-Following is a short overview of the main components provided by this library:
+### API
+Please refer to the JavaDoc and sample projects listed in the [Related Links](#related-links) section
+for details on how to use this utility library.
 
-- AbstractStreamingJsonParser: Handles the technical JSON parsing aspects.
+### Build System
+The Maven artifacts for this project are automatically deployed to
+the Maven repositories listed in the [Related Links](#related-links) section.
 
-TODO
+Following is an example on how to add this library to your build.gradle 
+script:
 
-## Adding this project as a parser plugin dependency
+```groovy
+repositories {
+    maven { url "https://dl.bintray.com/fortify-ps/maven" }
+}
 
-The Maven artifacts for releases of this project are provided through 
-JFrog Bintray. To use these artifacts, add the following repository
-to your Gradle `repositories` closure:
-
-```
-   // repository with fortify-ps releases
-   maven { url "https://dl.bintray.com/fortify-ps/maven" }
-```
-
-Based on the SSC sample parser Gradle layout, this project can then be
-declared as a dependency by adding the following dependency to your Gradle
-`dependencies` closure, replacing `1.0.0` with the actual version
-you want to use (see [https://bintray.com/fortify-ps/maven] for available
-versions):
-
-```
-   compileExport(group: 'com.fortify.ps.ssc.parser.util', name: 'fortify-ssc-parser-util', version:'1.0.0') { transitive = true }
-```
-
-### Snapshot dependency
-
-Usually your parser plugin should use only released versions of this project.
-However, if you are doing simultaneous development on both this project and
-an actual parser plugin, you may want to declare a dependency on a snapshot
-version of this project.
-
-Snapshot versions are provided through JFrog Artifactory, and can be referenced
-as stated below.
-
-Repository to be added to the Gradle `repositories` closure:
-
-```
-   // repository with fortify-ps snapshots
-   maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
+dependencies {
+    compileExport(group: 'com.fortify.ssc.parser.util', name: 'fortify-ssc-parser-util', version:'<version>') { transitive = true }
+}
 ```
 
-Dependency to be added to the Gradle `dependencies` closure, replacing 
-`1.0.0-SNAPSHOT` with the actual snapshot version you want to use:
+The configuration listed above will only allow access to release versions of this library.
+Usually it is not recommended to depend on snapshot versions of this library, but if necessary
+you can use the example below to access snapshot versions of this library. Note the additional
+repository definition, and the `changing: true` property on `compileExport`.
 
+```groovy
+repositories {
+    maven { url "https://dl.bintray.com/fortify-ps/maven" }
+    maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
+}
+
+dependencies {
+    compileExport(group: 'com.fortify.ssc.parser.util', name: 'fortify-ssc-parser-util', version:'<version>', changing: true) { transitive = true }
+}
 ```
-   compileExport(group: 'com.fortify.ps.ssc.parser.util', name: 'fortify-ssc-parser-util', version:'1.0.0-SNAPSHOT') { transitive = true }
-```
+
+Note that most projects in the fortify-ps organization use the
+[repo-helper.gradle](https://github.com/fortify-ps/gradle-helpers/blob/1.0/repo-helper.gradle)
+Gradle helper script to configure repositories; that script uses
+slightly different repository settings than listed above in order to also 
+allow access to snapshot builds. See the https://github.com/fortify-ps/gradle-helpers 
+project for more information and other Gradle helper scripts.
 
 
-## Build Environment
+## Information for library developers
 
-This project is managed using the included gradle wrapper scripts.
-The commands listed in the following sections simply state `gradlew`
-commands; you will need to run this as `./gradlew` on Linux/bash 
-based systems.
+The following sections provide information that may be useful for developers of the 
+`fortify-ssc-parser-util` library.
 
-For example, to list all available tasks, you would run one of the following
-commands from the project directory:
+### Gradle
 
-- Windows: `gradlew tasks`
-- Linux/bash: `./gradlew tasks`
+It is strongly recommended to build this project using the included Gradle Wrapper
+scripts; using other Gradle versions may result in build errors and other issues.
 
-### Build
+The Gradle build uses various helper scripts from https://github.com/fortify-ps/gradle-helpers;
+please refer to the documentation and comments in included scripts for more information. 
 
-To build, simply invoke the gradle wrapper with the `build` task:
+### Commonly used commands
 
-`gradlew build`
+All commands listed below use Linux/bash notation; adjust accordingly if you
+are running on a different platform. All commands are to be executed from
+the main project directory.
+
+* `./gradlew tasks --all`: List all available tasks
+* Build & publish:
+  * `./gradlew clean build`: Clean and build the project
+  * `./gradlew build`: Build the project without cleaning
+  * `./gradlew publish`: Publish the project to the local Maven repository, for use by other local projects. Should usually only be done from a snapshot branch; see [Versioning](#versioning).
+* Version management:
+  * `./gradlew printProjectVersion`: Print the current version
+  * `./gradlew startSnapshotBranch -PnextVersion=2.0`: Start a new snapshot branch for an upcoming `2.0` version
+  * `./gradlew releaseSnapshot`: Merge the changes from the current branch to the master branch, and create release tag
+* `./fortify-scan.sh`: Run a Fortify scan; requires Fortify SCA to be installed
+
+Note that the version management tasks operate only on the local repository; you will need to manually
+push any changes (including tags and branches) to the remote repository.
 
 ### Versioning
 
-Project version is automatically managed by the `com.intershop.gradle.scmversion`
-plugin based on Git tags. In order to run tasks provided by this plugin, you will need
-to set the `SCM_USERNAME` and `SCM_PASSWORD` environment variables corresponding
-to your GitHub username and password. When using two-factor authentication, you will need
-to use a personal access token instead of the actual password. 
+The various version-related Gradle tasks assume the following versioning methodology:
 
-After committing and pushing all changes, a new version of this project can be tagged by 
-running the following command:
+* The `master` branch is only used for creating tagged release versions
+* A branch named `<version>-SNAPSHOT` contains the current snapshot state for the upcoming release
+* Optionally, other branches can be used to develop individual features, perform bug fixes, ...
+  * However, note that the Gradle build may be unable to identify a correct version number for the project
+  * As such, only builds from tagged versions or from a `<version>-SNAPSHOT` branch should be published to a Maven repository
 
-`gradlew tag`
+### Automated Builds & publishing
 
-This command will create a new Git tag based on the current version number, using the
-format `RELEASE_<major>.<minor>.<patch>`.
+Travis-CI builds are automatically triggered when there is any change in the project repository,
+for example due to pushing changes, or creating tags or branches. If applicable, build artifacts 
+are automatically published to a Maven repository:
 
-After tagging for example version `1.0.0`, any subsequent commits will result
-in the version number being updated to `1.1.0-SNAPSHOT`. Running `gradlew tag`
-again will result in the corresponding `RELEASE_1.1.0` tag being created, after
-which you can continue working on the next snapshot version.
+* When building a tagged version, the Gradle `bintrayUpload` task will be invoked to upload the release version to JFrog Bintray
+* When building a branch named `<version>-SNAPSHOT`, the Gradle `artifactoryPublish` task will be invoked to publish a snapshot version to JFrog Artifactory
+* No artifacts will be deployed for any other build, for example when Travis-CI builds the `master` branch
 
-Note that the plugin also provides a `release` task. For our development process it 
-is not recommended to use this task, as it will result in a detached HEAD. 
+See the [Related Links](#related-links) section for the relevant Travis-CI, Bintray and Artifactory links.
 
-### Deployment to local Maven repository
 
-Based on the `maven-publish` plugin, the current workspace state can be
-published as Maven artifacts to your local Maven repository using the following command:
-
-`gradlew publish`
-
-This is particularly useful if you are doing simultaneous development on both this 
-project and an actual parser plugin.
-
-### Deployment to public repositories
-
-Deployment to public repositories is done using the following two plugins:
-
-- `com.jfrog.bintray` to deploy release versions to JFrog Bintray
-- `com.jfrog.artifactory` to deploy snapshot versions to JFrog Artifactory
-
-#### Remainder of this section is not yet applicable until Travis CI issues have been resolved
-
-Invoking the corresponding deployment tasks usually should not be done manually, 
-but is instead managed through `.travis.yml`. 
-
-Every commit will trigger a new build on [travis-ci.org]; this build will automatically 
-deploy the snapshot version to JFrog Artifactory.
-
-Tagging a release (see previous section) will also trigger a new build on [travis-ci.org],
-but the release version will be deployed to JFrog Bintray instead.  
+# Licensing
+See [LICENSE.TXT](LICENSE.TXT)

@@ -1,32 +1,34 @@
 plugins {
     id 'maven-publish'
     id 'java-library'
-    id "com.jfrog.bintray" version "1.8.4"
-    id "com.jfrog.artifactory" version "4.10.0"
-    id 'com.intershop.gradle.scmversion' version '6.0.0'
+    id 'com.jfrog.bintray' version "1.8.4"
+    id 'com.jfrog.artifactory' version "4.10.0"
+    id 'org.ajoberstar.grgit' version "4.0.0"
 }
 
-group 'com.fortify.ssc.parser.util'
+ext {
+	gradleHelpersLocation = "https://raw.githubusercontent.com/fortify-ps/gradle-helpers/1.0"
+	
+	dependencyVersion=[
+		fortify_plugin_api:  '1.0.1',
+		slf4j:               '1.7.21',
+		jackson:             '2.8.4',
+		commons_lang3:       '3.9',
+		commons_codec:       '1.14',
+		commons_io:          '2.6'
+	]
+}
+
+apply from: "${gradleHelpersLocation}/version-helper.gradle"
+apply from: "${gradleHelpersLocation}/upload-mvn-helper.gradle"
+apply from: "${gradleHelpersLocation}/fortify-helper.gradle"
 
 apply plugin: 'java'
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
-ext {
-    jacksonVersion = "2.8.4"
-}
-
-scm {
-    version {
-        type = 'threeDigits'
-        initialVersion = '1.0.0'
-        increment = 'MINOR'
-    }
-}
-
-// Project version based on SCM information
-// Reg-ex replace to revert special handling of scmversion plugin
-// when checking out specific commit
-version = scm.version.version.replaceFirst(/rev\.id\.[0-9a-f]+-/, "")
+version = getProjectVersion()
+group = 'com.fortify.ssc.parser.util'
 
 repositories {
     // repository with fortify artifacts
@@ -36,29 +38,31 @@ repositories {
     mavenCentral()
 }
 
+description = 'Utility classes for developing Fortify SSC parser plugins'
+
 test {
     useJUnitPlatform()
 }
 
 dependencies {
     // dependencies provided by plugin runtime
-    compileOnly 'com.fortify.plugin:plugin-api:1.0.1'
-    compileOnly 'org.slf4j:slf4j-api:1.7.21'
+    compileOnly "com.fortify.plugin:plugin-api:${dependencyVersion.fortify_plugin_api}"
+    compileOnly "org.slf4j:slf4j-api:${dependencyVersion.slf4j}"
 
     // plugin specific dependencies
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "$jacksonVersion") { transitive = false }
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "$jacksonVersion") { transitive = false }
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "$jacksonVersion") { transitive = false }
-    compile(group: 'org.apache.commons', name: 'commons-lang3', version: "3.9") { transitive = false }
-    compile(group: 'commons-codec', name: 'commons-codec', version: '1.13') { transitive = false }
-    compile(group: 'commons-io', name: 'commons-io', version: '2.6') { transitive = false }
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "${dependencyVersion.jackson}") { transitive = false }
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${dependencyVersion.jackson}") { transitive = false }
+    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${dependencyVersion.jackson}") { transitive = false }
+    compile(group: 'org.apache.commons', name: 'commons-lang3', version: "${dependencyVersion.commons_lang3}") { transitive = false }
+    compile(group: 'commons-codec', name: 'commons-codec', version: "${dependencyVersion.commons_codec}") { transitive = false }
+    compile(group: 'commons-io', name: 'commons-io', version: "${dependencyVersion.commons_io}") { transitive = false }
     
     //testImplementation 'org.junit.platform:junit-jupiter-api:5.3.1'
     
     testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1')
     testImplementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: "1.1.0")
     testRuntimeOnly(group: 'org.junit.jupiter', name:'junit-jupiter-engine', version: '5.3.1')
-    testRuntimeOnly(group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1')
+    testRuntimeOnly(group: 'org.slf4j', name: 'slf4j-simple', version: "${dependencyVersion.slf4j}")
 }
 
 task sourcesJar(type: Jar) {
@@ -67,7 +71,9 @@ task sourcesJar(type: Jar) {
 }
 
 task myjavadoc(type: Javadoc) {
-    failOnError = false
+	source = sourceSets.main.allJava
+	classpath = sourceSets.main.compileClasspath
+	failOnError = false
 }
 
 task javadocJar(type: Jar) {
@@ -78,13 +84,16 @@ task javadocJar(type: Jar) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
+        	from components.java
+	        artifact sourcesJar
+	        artifact javadocJar
             pom {
-                name = 'SSC Parser Utility Classes'
-                description = 'Utility classes for implementing SSC Parser Plugins'
-                url = 'https://github.com/fortify-ps/fortify-ssc-parser-util'
+            	version = project.version
+                name = project.name
+                afterEvaluate {
+                	description = project.description
+                }
+                url = 'https://github.com/fortify-ps/fortify-client-api'
                 licenses {
                     license {
                         name = 'MIT License'
@@ -99,47 +108,13 @@ publishing {
                     }
                 }
                 scm {
-                    developerConnection = 'scm:git:https://github.com/fortify-ps/fortify-ssc-parser-util.git'
+                    developerConnection = "scm:git:https://github.com/fortify-ps/${rootProject.name}.git"
                 }
             }
         }
     }
-    repositories {
-        mavenLocal()
-    }
 }
+// Publish to Maven local repository when publish task is executed
+publish.finalizedBy publishToMavenLocal
 
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['mavenJava']
-    publish = true
-    pkg {
-        repo = 'maven'
-        name = 'fortify-ssc-parser-util'
-        licenses = ['MIT']
-        vcsUrl = 'https://github.com/fortify-ps/fortify-ssc-parser-util.git'
-        userOrg = 'fortify-ps'
-    }
-}
-
-artifactory {
-    contextUrl = 'http://oss.jfrog.org'
-    publish {
-        repository {
-            repoKey = 'oss-snapshot-local'
-            username = System.getProperty('bintray.user')
-            password = System.getProperty('bintray.key')
-        }
-        defaults {
-            publications('mavenJava')
-            publishArtifacts = true
-            publishPom = true
-        }
-    }
-    resolve {
-        repoKey = 'jcenter'
-    }
-    clientConfig.info.setBuildNumber(System.getProperty('build.number'))
-}
 
