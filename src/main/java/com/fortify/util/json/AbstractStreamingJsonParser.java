@@ -59,6 +59,8 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	private final Map<String, JsonHandler> pathToHandlerMap = new LinkedHashMap<>();
 	private Set<JsonToken> expectedStartTokens = ExtendedJsonParser.SET_START_OBJECT;
 	private ObjectMapper objectMapper = DefaultObjectMapperFactory.getDefaultObjectMapper();
+	private JsonFactory jsonFactory = new MappingJsonFactory(objectMapper)
+			.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
 	@SuppressWarnings("unchecked")
 	private T _this = (T)this;
 
@@ -82,6 +84,11 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	
 	public final T objectMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
+		return _this;
+	}
+	
+	public final T jsonFactory(JsonFactory jsonFactory) {
+		this.jsonFactory = jsonFactory;
 		return _this;
 	}
 	
@@ -118,11 +125,6 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 			pathToHandlerMap.put(path, jsonParser->parseObjectOrArrayChildren(jsonParser, path));
 		}
 	}
-	
-	private final JsonFactory getJsonFactory() {
-		return new MappingJsonFactory(objectMapper)
-				.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
-	}
 
 	/**
 	 * Parse JSON contents retrieved from the given {@link InputStream} using
@@ -140,7 +142,7 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 		try ( final InputStream content = 
 					new RegionInputStream(inputStream, inputRegion, false);
 				final ExtendedJsonParser jsonParser = 
-					new ExtendedJsonParser(getJsonFactory().createParser(content))
+					new ExtendedJsonParser(jsonFactory.createParser(content))
 			) {
 			jsonParser.nextToken();
 			jsonParser.assertToken(expectedStartTokens);

@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.ssc.parser;
+package com.fortify.util.ssc.parser.json;
 
 import java.io.IOException;
 import java.io.InputStream;

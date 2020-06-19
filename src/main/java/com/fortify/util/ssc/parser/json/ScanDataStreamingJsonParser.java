@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.ssc.parser;
+package com.fortify.util.ssc.parser.json;
 
 public class ScanDataStreamingJsonParser extends AbstractScanDataStreamingJsonParser<ScanDataStreamingJsonParser> {
 	public ScanDataStreamingJsonParser() {
