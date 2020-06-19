@@ -1,0 +1,5 @@
+description = 'Fortify SSC Parser Utilities for parsing JSON files'
+
+dependencies {
+	compile project(':common')
+}

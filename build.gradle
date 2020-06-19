@@ -1,6 +1,7 @@
 plugins {
     id 'maven-publish'
-    id 'java-library'
+	id 'base'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'com.jfrog.bintray' version "1.8.4"
     id 'com.jfrog.artifactory' version "4.10.0"
     id 'org.ajoberstar.grgit' version "4.0.0"
@@ -8,113 +9,142 @@ plugins {
 
 ext {
 	gradleHelpersLocation = "https://raw.githubusercontent.com/fortify-ps/gradle-helpers/1.0"
-	
-	dependencyVersion=[
-		fortify_plugin_api:  '1.0.1',
-		slf4j:               '1.7.21',
-		jackson:             '2.8.4',
-		commons_lang3:       '3.9',
-		commons_codec:       '1.14',
-		commons_io:          '2.6'
-	]
 }
 
 apply from: "${gradleHelpersLocation}/version-helper.gradle"
 apply from: "${gradleHelpersLocation}/upload-mvn-helper.gradle"
 apply from: "${gradleHelpersLocation}/fortify-helper.gradle"
 
-apply plugin: 'java'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-version = getProjectVersion()
-group = 'com.fortify.ssc.parser.util'
-
-repositories {
-    // repository with fortify artifacts
-    maven {
-        url  "http://dl.bintray.com/fortify/maven-public"
-    }
-    mavenCentral()
-}
-
 description = 'Utility classes for developing Fortify SSC parser plugins'
 
-test {
-    useJUnitPlatform()
+allprojects {
+	apply plugin: 'maven-publish'
+	apply plugin: 'com.jfrog.bintray'
+	apply plugin: 'com.jfrog.artifactory'
+	apply plugin: 'io.spring.dependency-management'
+	
+	group = 'com.fortify.ssc.parser.util'
+	version = getProjectVersion()
+	
+	ext {
+		dependencyVersion=[
+			fortify_plugin_api:  '1.0.1',
+			slf4j:               '1.7.21',
+			jackson:             '2.8.4',
+			commons_lang3:       '3.9',
+			commons_codec:       '1.14',
+			commons_io:          '2.6',
+			woodstox:            '6.2.1'
+		]
+	}
+
+	dependencyManagement {
+		dependencies {
+			dependencySet(group:"${project.group}", version: "${project.version}") {
+				entry 'common'
+				entry 'json'
+				entry 'xml'
+			}
+		
+			// dependencies provided by plugin runtime
+			dependency "com.fortify.plugin:plugin-api:${dependencyVersion.fortify_plugin_api}"
+			dependency "org.slf4j:slf4j-api:${dependencyVersion.slf4j}"
+			
+			dependencySet(group:'com.fasterxml.jackson.core', version: "${dependencyVersion.jackson}") {
+				entry 'jackson-core'
+				entry 'jackson-annotations'
+				entry 'jackson-databind'
+			}
+			dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${dependencyVersion.jackson}"
+			dependency "com.fasterxml.woodstox:woodstox-core:${dependencyVersion.woodstox}"
+			
+			dependency "org.apache.commons:commons-lang3:${dependencyVersion.commons_lang3}"
+			dependency "commons-codec:commons-codec:${dependencyVersion.commons_codec}"
+			dependency "commons-io:commons-io:${dependencyVersion.commons_io}"
+		}
+	}
+
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				pom {
+					version = project.version
+					name = project.name
+					afterEvaluate {
+						description = project.description
+					}
+					url = 'https://github.com/fortify-ps/fortify-ssc-parser-util'
+					licenses {
+						license {
+							name = 'MIT License'
+							url = 'https://opensource.org/licenses/MIT'
+						}
+					}
+					developers {
+						developer {
+							id = 'rsenden'
+							name = 'Ruud Senden'
+							email = 'ruud.senden@microfocus.com'
+						}
+					}
+					scm {
+						developerConnection = "scm:git:https://github.com/fortify-ps/${rootProject.name}.git"
+					}
+				}
+			}
+		}
+	}
+	// Publish to Maven local repository when publish task is executed
+	publish.finalizedBy publishToMavenLocal
 }
 
-dependencies {
-    // dependencies provided by plugin runtime
-    compileOnly "com.fortify.plugin:plugin-api:${dependencyVersion.fortify_plugin_api}"
-    compileOnly "org.slf4j:slf4j-api:${dependencyVersion.slf4j}"
+subprojects {
+	apply plugin: 'java-library'
+	apply plugin: 'maven-publish'
+	
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+	
+	repositories {
+		// repository with fortify artifacts
+		maven {
+			url  "http://dl.bintray.com/fortify/maven-public"
+		}
+		mavenCentral()
+	}
 
-    // plugin specific dependencies
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "${dependencyVersion.jackson}") { transitive = false }
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${dependencyVersion.jackson}") { transitive = false }
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${dependencyVersion.jackson}") { transitive = false }
-    compile(group: 'org.apache.commons', name: 'commons-lang3', version: "${dependencyVersion.commons_lang3}") { transitive = false }
-    compile(group: 'commons-codec', name: 'commons-codec', version: "${dependencyVersion.commons_codec}") { transitive = false }
-    compile(group: 'commons-io', name: 'commons-io', version: "${dependencyVersion.commons_io}") { transitive = false }
-    
-    //testImplementation 'org.junit.platform:junit-jupiter-api:5.3.1'
-    
-    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1')
-    testImplementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: "1.1.0")
-    testRuntimeOnly(group: 'org.junit.jupiter', name:'junit-jupiter-engine', version: '5.3.1')
-    testRuntimeOnly(group: 'org.slf4j', name: 'slf4j-simple', version: "${dependencyVersion.slf4j}")
+	dependencies {
+		// dependencies provided by plugin runtime
+		compileOnly "com.fortify.plugin:plugin-api"
+		compileOnly "org.slf4j:slf4j-api"
+	}
+	
+	task sourcesJar(type: Jar) {
+		from sourceSets.main.allJava
+		archiveClassifier = 'sources'
+	}
+
+	task myjavadoc(type: Javadoc) {
+		source = sourceSets.main.allJava
+		classpath = sourceSets.main.compileClasspath
+		failOnError = false
+	}
+
+	task javadocJar(type: Jar) {
+		from myjavadoc
+		archiveClassifier = 'javadoc'
+	}
+	
+	publishing {
+	    publications {
+	        mavenJava(MavenPublication) {
+	            from components.java
+	            artifact sourcesJar
+	            artifact javadocJar
+	        }
+	    }
+	}
 }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier = 'sources'
-}
-
-task myjavadoc(type: Javadoc) {
-	source = sourceSets.main.allJava
-	classpath = sourceSets.main.compileClasspath
-	failOnError = false
-}
-
-task javadocJar(type: Jar) {
-    from myjavadoc
-    archiveClassifier = 'javadoc'
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-        	from components.java
-	        artifact sourcesJar
-	        artifact javadocJar
-            pom {
-            	version = project.version
-                name = project.name
-                afterEvaluate {
-                	description = project.description
-                }
-                url = 'https://github.com/fortify-ps/fortify-client-api'
-                licenses {
-                    license {
-                        name = 'MIT License'
-                        url = 'https://opensource.org/licenses/MIT'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'rsenden'
-                        name = 'Ruud Senden'
-                        email = 'ruud.senden@microfocus.com'
-                    }
-                }
-                scm {
-                    developerConnection = "scm:git:https://github.com/fortify-ps/${rootProject.name}.git"
-                }
-            }
-        }
-    }
-}
-// Publish to Maven local repository when publish task is executed
-publish.finalizedBy publishToMavenLocal
 
 

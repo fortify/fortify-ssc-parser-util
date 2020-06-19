@@ -1,0 +1,7 @@
+description = 'Fortify SSC Parser Utilities for parsing JSON files'
+
+dependencies {
+	compile project(':common')
+	compile(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml') { transitive = true }
+	compile(group: 'com.fasterxml.woodstox', name: 'woodstox-core') { transitive = true }
+}
