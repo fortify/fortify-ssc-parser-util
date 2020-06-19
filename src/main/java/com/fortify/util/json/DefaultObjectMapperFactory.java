@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDelegatingDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fortify.util.jackson.DateConverter;
+import com.fortify.util.jackson.IsoDateTimeConverter;
 
 public class DefaultObjectMapperFactory {
 	private static final ObjectMapper DEFAULT_OBJECT_MAPPER = _getDefaultObjectMapper();
@@ -46,13 +46,13 @@ public class DefaultObjectMapperFactory {
 	 * 
 	 * <ul>
 	 *  <li>Configured to not fail on missing properties</li>
-	 *  <li>Adds a deserializer based on {@link DateConverter} for
+	 *  <li>Adds a deserializer based on {@link IsoDateTimeConverter} for
 	 *      deserializing date strings</li>
 	 */
 	private static final ObjectMapper _getDefaultObjectMapper() {
 		ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		SimpleModule module = new SimpleModule();
-		module.addDeserializer(Date.class, new StdDelegatingDeserializer<Date>(DateConverter.getInstance()));
+		module.addDeserializer(Date.class, new StdDelegatingDeserializer<Date>(IsoDateTimeConverter.getInstance()));
 		mapper.registerModule(module);
 		return mapper;
 	}

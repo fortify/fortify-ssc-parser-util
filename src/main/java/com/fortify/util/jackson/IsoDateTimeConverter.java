@@ -28,7 +28,7 @@ import java.time.temporal.TemporalQueries;
 import java.util.Date;
 
 /**
- * This {@link Converter} implementation can convert JSON date strings
+ * This {@link Converter} implementation can convert ISO date strings
  * into java {@link Date} objects. This class cannot be instantiated
  * externally; a singleton instance is available through the {@link #INSTANCE}
  * constant.
@@ -36,13 +36,13 @@ import java.util.Date;
  * @author Ruud Senden
  *
  */
-public class DateConverter extends StdConverter<String, Date> {
-	private static final DateConverter INSTANCE = new DateConverter();
+public class IsoDateTimeConverter extends StdConverter<String, Date> {
+	private static final IsoDateTimeConverter INSTANCE = new IsoDateTimeConverter();
     private static final DateTimeFormatter[] DATE_TIME_FORMATTERS = {DateTimeFormatter.ISO_DATE_TIME};
 
-    private DateConverter() {}
+    private IsoDateTimeConverter() {}
     
-    public static final DateConverter getInstance() {
+    public static final IsoDateTimeConverter getInstance() {
     	return INSTANCE;
     }
     
