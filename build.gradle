@@ -68,7 +68,7 @@ configure(subprojects.findAll {new File(it.projectDir, "src/main/java").exists()
 	repositories {
 		// repository with fortify artifacts
 		maven {
-			url  "http://dl.bintray.com/fortify/maven-public"
+			url  "https://dl.bintray.com/fortify/maven-public"
 		}
 		mavenCentral()
 	}
