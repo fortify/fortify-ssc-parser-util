@@ -5,7 +5,7 @@ dependencies {
     api(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations') { transitive = false }
     api(group: 'com.fasterxml.jackson.core', name: 'jackson-databind') { transitive = false }
     api(group: 'com.fasterxml.jackson.core', name: 'jackson-core') { transitive = false }
-    implementation(group: 'org.apache.commons', name: 'commons-lang3') { transitive = false }
-    implementation(group: 'commons-codec', name: 'commons-codec') { transitive = false }
+    api(group: 'org.apache.commons', name: 'commons-lang3') { transitive = false }
+    api(group: 'commons-codec', name: 'commons-codec') { transitive = false }
     api(group: 'commons-io', name: 'commons-io') { transitive = false }
 }

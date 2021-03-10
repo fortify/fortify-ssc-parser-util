@@ -1,8 +1,8 @@
 description = 'Fortify SSC Parser Utilities for parsing JSON files'
 
 dependencies {
-	implementation project(':fortify-ssc-parser-util-common')
-	implementation(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml') { transitive = true }
+	api project(':fortify-ssc-parser-util-common')
+	api(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml') { transitive = true }
 	implementation(group: 'com.fasterxml.woodstox', name: 'woodstox-core') { transitive = true }
 	implementation(group: 'org.apache.commons', name: 'commons-lang3') { transitive = false }
 }
