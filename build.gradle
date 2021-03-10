@@ -41,9 +41,9 @@ allprojects {
 	dependencyManagement {
 		dependencies {
 			dependencySet(group:"${project.group}", version: "${project.version}") {
-				entry 'common'
-				entry 'json'
-				entry 'xml'
+				entry 'fortify-ssc-parser-util-common'
+				entry 'fortify-ssc-parser-util-json'
+				entry 'fortify-ssc-parser-util-xml'
 			}
 		
 			// dependencies provided by plugin runtime
