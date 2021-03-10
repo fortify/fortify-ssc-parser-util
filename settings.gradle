@@ -1,4 +1,5 @@
 rootProject.name = 'fortify-ssc-parser-util'
+include 'fortify-ssc-parser-util-bom'
 include 'fortify-ssc-parser-util-common'
 include 'fortify-ssc-parser-util-json'
 include 'fortify-ssc-parser-util-xml'

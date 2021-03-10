@@ -1,0 +1,34 @@
+plugins {
+    id 'java-platform'
+}
+
+description = 'Bill Of Materials for fortify-parser-util'
+
+javaPlatform {
+    allowDependencies()
+}
+
+dependencies {
+	api platform('com.fasterxml.jackson:jackson-bom:2.12.1')
+		
+	constraints {
+		api 'org.slf4j:slf4j-api:1.7.30'
+		api 'com.fortify.plugin:plugin-api:1.0.1'
+		api 'com.fasterxml.woodstox:woodstox-core:6.2.1'
+		api 'org.apache.commons:commons-lang3:3.12.0'
+		api 'commons-codec:commons-codec:1.15'
+		api 'commons-io:commons-io:2.8.0'
+		
+		api "com.fortify.ssc.parser.util:fortify-ssc-parser-util-common:${project.version}"
+		api "com.fortify.ssc.parser.util:fortify-ssc-parser-util-json:${project.version}"
+		api "com.fortify.ssc.parser.util:fortify-ssc-parser-util-xml:${project.version}"
+	}
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.javaPlatform
+        }
+    }
+}

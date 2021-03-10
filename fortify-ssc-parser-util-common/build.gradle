@@ -2,10 +2,10 @@ description = 'Fortify SSC Parser Utilities common code'
 
 dependencies {
     // dependencies required by common code
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations') { transitive = false }
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-databind') { transitive = false }
-    compile(group: 'com.fasterxml.jackson.core', name: 'jackson-core') { transitive = false }
-    compile(group: 'org.apache.commons', name: 'commons-lang3') { transitive = false }
-    compile(group: 'commons-codec', name: 'commons-codec') { transitive = false }
-    compile(group: 'commons-io', name: 'commons-io') { transitive = false }
+    api(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations') { transitive = false }
+    api(group: 'com.fasterxml.jackson.core', name: 'jackson-databind') { transitive = false }
+    api(group: 'com.fasterxml.jackson.core', name: 'jackson-core') { transitive = false }
+    implementation(group: 'org.apache.commons', name: 'commons-lang3') { transitive = false }
+    implementation(group: 'commons-codec', name: 'commons-codec') { transitive = false }
+    api(group: 'commons-io', name: 'commons-io') { transitive = false }
 }
