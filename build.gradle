@@ -1,10 +1,9 @@
 plugins {
     id 'maven-publish'
 	id 'base'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'com.jfrog.bintray' version "1.8.4"
-    id 'com.jfrog.artifactory' version "4.10.0"
-    id 'org.ajoberstar.grgit' version "4.0.0"
+    id 'com.jfrog.bintray' version "1.8.5"
+    id 'com.jfrog.artifactory' version "4.20.0"
+    id 'org.ajoberstar.grgit' version "4.1.0"
 }
 
 ext {
@@ -21,48 +20,9 @@ allprojects {
 	apply plugin: 'maven-publish'
 	apply plugin: 'com.jfrog.bintray'
 	apply plugin: 'com.jfrog.artifactory'
-	apply plugin: 'io.spring.dependency-management'
 	
 	group = 'com.fortify.ssc.parser.util'
 	version = getProjectVersion()
-	
-	ext {
-		dependencyVersion=[
-			fortify_plugin_api:  '1.0.1',
-			slf4j:               '1.7.21',
-			jackson:             '2.8.4',
-			commons_lang3:       '3.9',
-			commons_codec:       '1.14',
-			commons_io:          '2.6',
-			woodstox:            '6.2.1'
-		]
-	}
-
-	dependencyManagement {
-		dependencies {
-			dependencySet(group:"${project.group}", version: "${project.version}") {
-				entry 'fortify-ssc-parser-util-common'
-				entry 'fortify-ssc-parser-util-json'
-				entry 'fortify-ssc-parser-util-xml'
-			}
-		
-			// dependencies provided by plugin runtime
-			dependency "com.fortify.plugin:plugin-api:${dependencyVersion.fortify_plugin_api}"
-			dependency "org.slf4j:slf4j-api:${dependencyVersion.slf4j}"
-			
-			dependencySet(group:'com.fasterxml.jackson.core', version: "${dependencyVersion.jackson}") {
-				entry 'jackson-core'
-				entry 'jackson-annotations'
-				entry 'jackson-databind'
-			}
-			dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${dependencyVersion.jackson}"
-			dependency "com.fasterxml.woodstox:woodstox-core:${dependencyVersion.woodstox}"
-			
-			dependency "org.apache.commons:commons-lang3:${dependencyVersion.commons_lang3}"
-			dependency "commons-codec:commons-codec:${dependencyVersion.commons_codec}"
-			dependency "commons-io:commons-io:${dependencyVersion.commons_io}"
-		}
-	}
 
 	publishing {
 		publications {
@@ -98,7 +58,7 @@ allprojects {
 	publish.finalizedBy publishToMavenLocal
 }
 
-subprojects {
+configure(subprojects.findAll {new File(it.projectDir, "src/main/java").exists()}) {
 	apply plugin: 'java-library'
 	apply plugin: 'maven-publish'
 	
@@ -114,6 +74,7 @@ subprojects {
 	}
 
 	dependencies {
+		api platform(project(':fortify-ssc-parser-util-bom'))
 		// dependencies provided by plugin runtime
 		compileOnly "com.fortify.plugin:plugin-api"
 		compileOnly "org.slf4j:slf4j-api"
