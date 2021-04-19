@@ -45,6 +45,8 @@ public abstract class AbstractScanDataStreamingJsonParser<T extends AbstractScan
 	/**
 	 * Parse JSON contents retrieved from the given {@link ScanData} using
 	 * the previously configured handlers.
+	 * @param scanData {@link ScanData} instance
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */ 
 	public final void parse(ScanData scanData) throws IOException {
 		parse(scanData, null);
@@ -53,6 +55,9 @@ public abstract class AbstractScanDataStreamingJsonParser<T extends AbstractScan
 	/**
 	 * Parse JSON contents retrieved from the given {@link ScanData} object
 	 * for the given input region, using the previously configured handlers.
+	 * @param scanData {@link ScanData} instance
+	 * @param inputRegion {@link Region} to be parsed
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final void parse(ScanData scanData, Region inputRegion) throws IOException {
 		try ( final InputStream inputStream = scanData.getInputStream(fileName -> hasSupportedExtension(fileName)) ) {

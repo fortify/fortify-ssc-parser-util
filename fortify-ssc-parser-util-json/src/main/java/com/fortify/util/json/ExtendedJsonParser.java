@@ -47,7 +47,7 @@ public class ExtendedJsonParser extends JsonParserDelegate {
 	/**
 	 * Assert that the current parser is currently pointing at the start tag of a 
 	 * JSON array, throwing a {@link IOException} otherwise.
-	 * @throws IOException
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final void assertStartArray() throws IOException {
 		assertToken(SET_START_ARRAY);
@@ -56,7 +56,7 @@ public class ExtendedJsonParser extends JsonParserDelegate {
 	/**
 	 * Assert that the current parser is currently pointing at the start tag of a 
 	 * JSON object, throwing a {@link IOException} otherwise.
-	 * @throws IOException
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final void assertStartObject() throws IOException {
 		assertToken(SET_START_OBJECT);
@@ -65,7 +65,7 @@ public class ExtendedJsonParser extends JsonParserDelegate {
 	/**
 	 * Assert that the current parser is currently pointing at the start tag of a 
 	 * JSON object or array, throwing a {@link IOException} otherwise.
-	 * @throws IOException
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final void assertStartObjectOrArray() throws IOException {
 		assertToken(SET_START_OBJECT_OR_ARRAY);
@@ -74,7 +74,8 @@ public class ExtendedJsonParser extends JsonParserDelegate {
 	/**
 	 * Assert that the current parser is currently pointing at one of the 
 	 * given {@link JsonToken}s.
-	 * @throws IOException
+	 * @param expectedTokens The tokens that are expected at the current parse position
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final void assertToken(Set<JsonToken> expectedTokens) throws IOException {
 		if (!expectedTokens.contains(currentToken())) {
@@ -87,8 +88,8 @@ public class ExtendedJsonParser extends JsonParserDelegate {
 	 * this method will return the number of array entries. The pointer is moved to
 	 * the end of the array.
 	 * 
-	 * @return
-	 * @throws IOException
+	 * @return Number of array entries
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final int countArrayEntries() throws IOException {
 		assertStartArray();
@@ -105,8 +106,8 @@ public class ExtendedJsonParser extends JsonParserDelegate {
 	 * this method will return the number of object fields. The pointer is moved to
 	 * the end of the object.
 	 * 
-	 * @return
-	 * @throws IOException
+	 * @return Number of object entries
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final int countObjectEntries() throws IOException {
 		assertStartObject();
@@ -122,8 +123,8 @@ public class ExtendedJsonParser extends JsonParserDelegate {
 	 * Get the region (start and end position) of the current JSON object or array.
 	 * The pointer is moved to the end of the object or array.
 	 * 
-	 * @return
-	 * @throws IOException
+	 * @return {@link Region} instance describing start and end position of current JSON object or array
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final Region getObjectOrArrayRegion() throws IOException {
 		assertStartObjectOrArray();
