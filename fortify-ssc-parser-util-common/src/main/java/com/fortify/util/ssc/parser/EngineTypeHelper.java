@@ -53,7 +53,7 @@ public class EngineTypeHelper {
 	/**
 	 * Get the engine type from plugin.xml
 	 * 
-	 * @return
+	 * @return Enige type from plugin.xml
 	 */
 	private static final String _getEngineType() {
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();

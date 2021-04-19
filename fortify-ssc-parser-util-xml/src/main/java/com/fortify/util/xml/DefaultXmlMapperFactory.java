@@ -46,7 +46,7 @@ public class DefaultXmlMapperFactory {
 	 * 
 	 * <ul>
 	 *  <li>Configured to not fail on missing properties</li>
-	 *  <li>Adds a deserializer based on {@link DateConverter} for
+	 *  <li>Adds a deserializer based on {@link IsoDateTimeConverter} for
 	 *      deserializing date strings</li>
 	 */
 	private static final XmlMapper _getDefaultObjectMapper() {

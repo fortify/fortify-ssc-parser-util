@@ -51,6 +51,8 @@ import com.fortify.util.io.RegionInputStream;
  * TODO Add more information/examples how to use the various
  *      parse methods.
  * 
+ * @param <T> Concrete subtype
+ * 
  * @author Ruud Senden
  *
  */
@@ -97,7 +99,8 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	 * then calls {@link #addParentHandlers(String)} to add intermediate
 	 * handlers for reaching the given handler.
 	 * 
-	 * @param pathToHandlerMap
+	 * @param path Path for which to add the given handler
+	 * @param handler {@link JsonHandler} that should be used to handle the given path
 	 */
 	private final void addHandlerAndParentHandlers(String path, JsonHandler handler) {
 		pathToHandlerMap.put(path, handler);
@@ -116,8 +119,7 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	
 	/**
 	 * This method adds an intermediate handler for traversing into the given path.
-	 * @param pathToHandlerMap
-	 * @param path
+	 * @param path for which to add a parent handler
 	 */
 	private final void addParentHandler(final String path) {
 		if ( !pathToHandlerMap.containsKey(path) ) {
@@ -129,6 +131,8 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	/**
 	 * Parse JSON contents retrieved from the given {@link InputStream} using
 	 * the previously configured handlers.
+	 * @param inputStream from which to retrieve input to be parsed
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */ 
 	public final void parse(InputStream inputStream) throws IOException {
 		parse(inputStream, null);
@@ -137,6 +141,9 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	/**
 	 * Parse JSON contents retrieved from the given {@link InputStream} object
 	 * for the given input region, using the previously configured handlers.
+	 * @param inputStream from which to retrieve input to be parsed
+	 * @param inputRegion specifying the region to be parsed
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final void parse(InputStream inputStream, Region inputRegion) throws IOException {
 		try ( final InputStream content = 
@@ -159,10 +166,6 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	 * 
 	 * This method simply returns after handling the current JSON elements; recursive
 	 * parsing is handled by registered {@link JsonHandler} instances.
-	 * 
-	 * @param jsonParser
-	 * @param parentPath
-	 * @throws IOException
 	 */
 	private final void parse(final ExtendedJsonParser jsonParser, String parentPath) throws IOException {
 		JsonToken currentToken = jsonParser.getCurrentToken();
@@ -182,10 +185,6 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	/**
 	 * Append the given currentName to the given parentPath,
 	 * correctly handling the separator.
-	 * 
-	 * @param parentPath
-	 * @param currentName
-	 * @return
 	 */
 	private final String getPath(String parentPath, String currentName) {
 		String result = parentPath;
@@ -199,10 +198,6 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 
 	/**
 	 * Parse the children of the current JSON object or JSON array.
-	 * 
-	 * @param jsonParser
-	 * @param currentPath
-	 * @throws IOException
 	 */
 	private final void parseObjectOrArrayChildren(ExtendedJsonParser jsonParser, String currentPath) throws IOException {
 		JsonToken currentToken = jsonParser.getCurrentToken();
@@ -216,9 +211,9 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	/**
 	 * Parse the individual object properties of the current JSON object.
 	 * 
-	 * @param jsonParser
-	 * @param currentPath
-	 * @throws IOException
+	 * @param jsonParser {@link ExtendedJsonParser} instance
+	 * @param currentPath Current path
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final void parseObjectProperties(ExtendedJsonParser jsonParser, String currentPath) throws IOException {
 		parseChildren(jsonParser, currentPath, JsonToken.END_OBJECT);
@@ -227,9 +222,9 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	/**
 	 * Parse the individual array entries of the current JSON array.
 	 * 
-	 * @param jsonParser
-	 * @param currentPath
-	 * @throws IOException
+	 * @param jsonParser {@link ExtendedJsonParser} instance
+	 * @param currentPath Current path
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final void parseArrayEntries(ExtendedJsonParser jsonParser, String currentPath) throws IOException {
 		parseChildren(jsonParser, getPath(currentPath, "*"), JsonToken.END_ARRAY);
@@ -238,10 +233,10 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	/**
 	 * Parse the children of the current JSON element, up to the given endToken
 	 * 
-	 * @param jsonParser
-	 * @param currentPath
-	 * @param endToken
-	 * @throws IOException
+	 * @param jsonParser {@link ExtendedJsonParser} instance
+	 * @param currentPath Current path
+	 * @param endToken End token
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	private final void parseChildren(ExtendedJsonParser jsonParser, String currentPath, JsonToken endToken) throws IOException {
 		while (jsonParser.nextToken()!=endToken) {

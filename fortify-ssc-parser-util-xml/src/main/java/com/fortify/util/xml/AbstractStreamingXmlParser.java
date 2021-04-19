@@ -48,8 +48,8 @@ import com.fortify.util.io.RegionInputStream;
  * structures. 
  * TODO Add more information/examples how to use the various
  *      parse methods.
- *      
- * TODO search 'JSON' -> replace 'XML'
+ * 
+ * @param <T> Concrete subtype
  * 
  * @author Ruud Senden
  *
@@ -83,6 +83,9 @@ public abstract class AbstractStreamingXmlParser<T extends AbstractStreamingXmlP
 	/**
 	 * Parse XML contents retrieved from the given {@link InputStream} using
 	 * the previously configured handlers.
+	 * @param inputStream from which to retrieve input to be parsed
+	 * @throws XMLStreamException if there is any error while parsing the input data
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */ 
 	public final void parse(InputStream inputStream) throws XMLStreamException, IOException {
 		parse(inputStream, null);
@@ -91,6 +94,10 @@ public abstract class AbstractStreamingXmlParser<T extends AbstractStreamingXmlP
 	/**
 	 * Parse XML contents retrieved from the given {@link InputStream} object
 	 * for the given input region, using the previously configured handlers.
+	 * @param inputStream from which to retrieve input to be parsed
+	 * @param inputRegion {@link Region} to be parsed
+	 * @throws XMLStreamException if there is any error while parsing the input data
+	 * @throws IOException if there is any error while accessing or parsing the input data
 	 */
 	public final void parse(InputStream inputStream, Region inputRegion) throws XMLStreamException, IOException {
 		try ( final InputStream content = new RegionInputStream(inputStream, inputRegion, false) ) {
@@ -105,10 +112,6 @@ public abstract class AbstractStreamingXmlParser<T extends AbstractStreamingXmlP
 	 * invoke the {@link XMLStreamReaderHandler} to parse the contents of the current XML element.
 	 * If no {@link XMLStreamReaderHandler} is found, this method will continue parsing the next 
 	 * element.
-	 * 
-	 * @param xsr
-	 * @param parentPath
-	 * @throws IOException
 	 */
 	private final void parse(final ExtendedXMLStreamReader xsr, String parentPath) throws XMLStreamException, IOException {
 		while ( xsr.hasNext() ) {
@@ -134,10 +137,6 @@ public abstract class AbstractStreamingXmlParser<T extends AbstractStreamingXmlP
 	/**
 	 * Append the given currentName to the given parentPath,
 	 * correctly handling the separator.
-	 * 
-	 * @param parentPath
-	 * @param currentName
-	 * @return
 	 */
 	private final String getPath(String parentPath, String currentName) {
 		String result = parentPath;
