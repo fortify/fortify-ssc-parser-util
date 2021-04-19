@@ -1,4 +1,4 @@
-description = 'Fortify SSC Parser Utilities for parsing JSON files'
+description = 'Fortify SSC Parser Utilities for parsing XML files'
 
 dependencies {
 	api project(':fortify-ssc-parser-util-common')
