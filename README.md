@@ -115,7 +115,7 @@ scripts; using other Gradle versions may result in build errors and other issues
 * Build & publish:
   * `./gradlew clean build`: Clean and build the project
   * `./gradlew build`: Build the project without cleaning
-  * `./gradlew publish`: Publish this build as a snapshot version to the local Maven repository
+  * `./gradlew publishToMavenLocal`: Publish this build as a snapshot version to the local Maven repository for testing purposes
   * `./gradlew publishToOSSRH`: Publish this build as a snapshot version to OSSRH; usually only done from a GitHub Actions workflow
   * `./gradlew publishToOSSRH closeOSSRHStagingRepository -PisReleaseVersion=true`: Publish this build as a release version to the OSSRH staging area; use this for first-time publishing to check release contents
   * `./gradlew publishToOSSRH closeAndReleaseOSSRHStagingRepository -PisReleaseVersion=true`: Publish this build as a release version to Maven Central; usually only done from a GitHub Actions workflow

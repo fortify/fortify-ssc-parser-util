@@ -77,8 +77,6 @@ allprojects {
 			}
 		}
 	}
-	// Publish to Maven local repository when publish task is executed
-	publish.finalizedBy publishToMavenLocal
 	
 	// Sign using ORG_GRADLE_PROJECT_signingKey and ORG_GRADLE_PROJECT_signingPassword environment variables
 	signing {
