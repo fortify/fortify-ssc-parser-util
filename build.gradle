@@ -97,10 +97,6 @@ configure(subprojects.findAll {new File(it.projectDir, "src/main/java").exists()
 	targetCompatibility = JavaVersion.VERSION_1_8
 	
 	repositories {
-		// repository with fortify artifacts
-		maven {
-			url  "https://dl.bintray.com/fortify/maven-public"
-		}
 		mavenCentral()
 	}
 
