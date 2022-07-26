@@ -45,8 +45,8 @@ import org.w3c.dom.Document;
  */
 public class EngineTypeHelper {
 	public static final String ENGINE_TYPE_UNKNOWN = "UNKNOWN";
+	private static final Logger logger = LoggerFactory.getLogger(EngineTypeHelper.class);
 	private static final String ENGINE_TYPE = _getEngineType();
-	private static Logger logger = LoggerFactory.getLogger(EngineTypeHelper.class);
 	
 	private EngineTypeHelper() {}
 	
