@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.6.3](https://www.github.com/fortify-ps/fortify-ssc-parser-util/compare/v1.6.2...v1.6.3) (2022-07-26)
+
+
+### Bug Fixes
+
+* NPE while logging exception ([fae6f0b](https://www.github.com/fortify-ps/fortify-ssc-parser-util/commit/fae6f0b17c65313bf20c59968e217e30cbfbb3fd))
+
 ### [1.6.2](https://www.github.com/fortify-ps/fortify-ssc-parser-util/compare/v1.6.1...v1.6.2) (2022-07-26)
 
 
