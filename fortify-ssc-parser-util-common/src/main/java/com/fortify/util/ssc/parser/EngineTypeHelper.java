@@ -32,6 +32,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 /**
@@ -42,7 +44,9 @@ import org.w3c.dom.Document;
  *
  */
 public class EngineTypeHelper {
+	public static final String ENGINE_TYPE_UNKNOWN = "UNKNOWN";
 	private static final String ENGINE_TYPE = _getEngineType();
+	private static Logger logger = LoggerFactory.getLogger(EngineTypeHelper.class);
 	
 	private EngineTypeHelper() {}
 	
@@ -53,7 +57,7 @@ public class EngineTypeHelper {
 	/**
 	 * Get the engine type from plugin.xml
 	 * 
-	 * @return Enige type from plugin.xml
+	 * @return Engine type from plugin.xml, or the value of the {@link #ENGINE_TYPE_UNKNOWN} constant ({@value #ENGINE_TYPE_UNKNOWN}) if engine type cannot be determined
 	 */
 	private static final String _getEngineType() {
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
@@ -65,7 +69,8 @@ public class EngineTypeHelper {
             XPath xPath = XPathFactory.newInstance().newXPath();
             return (String) xPath.evaluate("/plugin/issue-parser/engine-type/text()", dDoc, XPathConstants.STRING);
         } catch (Exception e) {
-            throw new RuntimeException("Error reading engine type from plugin.xml", e);
+        	logger.warn("Unable to determine engine type from plugin.xml", e);
+            return ENGINE_TYPE_UNKNOWN;
         }
 	}
 }

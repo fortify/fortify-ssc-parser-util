@@ -8,4 +8,5 @@ dependencies {
     api(group: 'org.apache.commons', name: 'commons-lang3') { transitive = false }
     api(group: 'commons-codec', name: 'commons-codec') { transitive = false }
     api(group: 'commons-io', name: 'commons-io') { transitive = false }
+    api(group: 'org.slf4j', name: 'slf4j-api') { transitive = false }
 }
