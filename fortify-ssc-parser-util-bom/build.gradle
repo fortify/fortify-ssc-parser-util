@@ -22,6 +22,7 @@ dependencies {
 		api "com.fortify.ssc.parser.util:fortify-ssc-parser-util-common:${project.version}"
 		api "com.fortify.ssc.parser.util:fortify-ssc-parser-util-json:${project.version}"
 		api "com.fortify.ssc.parser.util:fortify-ssc-parser-util-xml:${project.version}"
+		api "com.fortify.ssc.parser.util:fortify-ssc-parser-util-cyclonedx:${project.version}"
 	}
 }
 

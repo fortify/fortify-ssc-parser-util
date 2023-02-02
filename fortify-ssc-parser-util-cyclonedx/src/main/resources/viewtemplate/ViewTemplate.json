@@ -1,0 +1,132 @@
+[
+	[
+		{
+			"type": "template",
+			"title": "Issue Details",
+			"templateId": "TITLEBOX",
+			"items": [
+				{
+					"type": "template",
+					"title": "File",
+					"key": "fullFileName",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "ID",
+					"key": "customAttributes.externalId",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "URL",
+					"key": "customAttributes.externalUrl",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "CWE(s)",
+					"key": "customAttributes.cwes",
+					"templateId": "SIMPLE",
+					"dataType": "string"				
+				},
+				{
+					"type": "template",
+					"title": "Priority",
+					"key": "friority",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "Tool Name",
+					"key": "customAttributes.toolName",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				}
+			]
+		},
+		{
+			"type": "template",
+			"title": "Component Details",
+			"templateId": "TITLEBOX",
+			"items": [
+				{
+					"type": "template",
+					"title": "Package Type",
+					"key": "customAttributes.componentPackageType",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "Group",
+					"key": "customAttributes.componentNamespace",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "Name",
+					"key": "customAttributes.componentName",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "Version",
+					"key": "customAttributes.componentVersion",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "Scope",
+					"key": "customAttributes.componentScope",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "Licenses",
+					"key": "customAttributes.componentLicenses",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "Description",
+					"key": "customAttributes.componentDescription",
+					"templateId": "COLLAPSE",
+					"dataType": "string"
+				}
+			]
+		}
+	],
+	[
+		{
+			"type": "template",
+			"title": "Overview",
+			"key": "brief",
+			"templateId": "COLLAPSE",
+			"dataType": "string"
+		},
+		{
+			"type": "template",
+			"title": "Details",
+			"key": "customAttributes.detail",
+			"templateId": "COLLAPSE",
+			"dataType": "string"
+		},
+		{
+			"type": "template",
+			"title": "Recommendations",
+			"key": "customAttributes.recommendation",
+			"templateId": "COLLAPSE",
+			"dataType": "string"
+		}
+	]
+]

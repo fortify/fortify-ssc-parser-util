@@ -7,15 +7,18 @@
 For information how to use the API provided by this project, please refer to the JavaDoc. Many Fortify SSC parser plugins hosted at https://github.com/fortify utilize this project, so you may refer to the source code of these plugins to view examples on how to utilize the API provided by this project:
 
 * **Sample Projects using fortify-ssc-parser-util**
-    * https://github.com/fortify-ps/fortify-ssc-parser-sample
-    * https://github.com/fortify-ps/fortify-ssc-parser-sarif
-    * https://github.com/fortify-ps/fortify-ssc-parser-owasp-dependency-check
-    * https://github.com/fortify-ps/fortify-ssc-parser-clair-yair
-    * https://github.com/fortify-ps/fortify-ssc-parser-clair-rest
-    * https://github.com/fortify-ps/fortify-ssc-parser-symfony-security-checker
-    * https://github.com/fortify-ps/fortify-ssc-parser-php-security-checker
-    * https://github.com/fortify-ps/fortify-ssc-parser-tenable-io-cs
-    * https://github.com/fortify-ps/fortify-ssc-parser-burp
+    * JSON: https://github.com/fortify/fortify-ssc-parser-sample
+    * JSON: https://github.com/fortify/fortify-ssc-parser-owasp-dependency-check
+    * JSON: https://github.com/fortify/fortify-ssc-parser-clair-yair
+    * JSON: https://github.com/fortify/fortify-ssc-parser-clair-rest
+    * JSON: https://github.com/fortify/fortify-ssc-parser-symfony-security-checker
+    * JSON: https://github.com/fortify/fortify-ssc-parser-php-security-checker
+    * JSON: https://github.com/fortify/fortify-ssc-parser-tenable-io-cs
+    * JSON: https://github.com/fortify/fortify-ssc-parser-sarif
+    * XML: https://github.com/fortify/fortify-ssc-parser-burp
+    * CycloneDX: https://github.com/fortify/fortify-ssc-parser-generic-cyclonedx
+    * CycloneDX: https://github.com/fortify/fortify-ssc-parser-debricked-cyclonedx
+    * CycloneDX: https://github.com/fortify/fortify-ssc-parser-owasp-dependency-track-cyclonedx
 
 ### Build System
 The Maven artifacts for this project are automatically deployed to the following Maven repositories:
