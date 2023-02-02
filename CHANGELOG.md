@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://www.github.com/fortify/fortify-ssc-parser-util/compare/v1.6.3...v1.7.0) (2023-02-02)
+
+
+### Features
+
+* Add module for parsing results in CycloneDX format ([265e48a](https://www.github.com/fortify/fortify-ssc-parser-util/commit/265e48ad52e8ad75c92951f14edcf062e6b4cfb8))
+
 ### [1.6.3](https://www.github.com/fortify-ps/fortify-ssc-parser-util/compare/v1.6.2...v1.6.3) (2022-07-26)
 
 
