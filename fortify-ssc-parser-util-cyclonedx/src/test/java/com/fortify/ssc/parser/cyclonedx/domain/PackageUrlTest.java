@@ -14,7 +14,7 @@ public class PackageUrlTest {
 		"pkg:docker/customer/dockerimage@sha256:244fd47e07d1004f0aed9c?repository_url=gcr.io,docker,customer,dockerimage,sha256:244fd47e07d1004f0aed9c",
 		"pkg:gem/jruby-launcher@1.1.2?platform=java,gem,,jruby-launcher,1.1.2",
 		"pkg:gem/ruby-advisory-db-check@0.12.4,gem,,ruby-advisory-db-check,0.12.4",
-		"pkg:github/package-url/purl-spec@244fd47e07d1004f0aed9c,github,package-url,purl-spec,244fd47e07d1004f0aed9c",
+		"pkg:gitlab/package-url/purl-spec@244fd47e07d1004f0aed9c,gitlab,package-url,purl-spec,244fd47e07d1004f0aed9c",
 		"pkg:golang/google.golang.org/genproto#googleapis/api/annotations,golang,google.golang.org,genproto,",
 		"pkg:maven/org.apache.xmlgraphics/batik-anim@1.9.1?packaging=sources,maven,org.apache.xmlgraphics,batik-anim,1.9.1",
 		"pkg:maven/org.apache.xmlgraphics/batik-anim@1.9.1?repository_url=repo.spring.io%2Frelease,maven,org.apache.xmlgraphics,batik-anim,1.9.1",
