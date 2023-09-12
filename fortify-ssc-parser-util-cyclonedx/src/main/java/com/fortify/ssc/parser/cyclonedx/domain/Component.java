@@ -31,14 +31,12 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fortify.util.mapdb.CustomSerializerElsa;
 
 import lombok.Getter;
 
 @Getter
 public final class Component implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public static final CustomSerializerElsa<Component> SERIALIZER = new CustomSerializerElsa<>(Component.class);
 	@JsonProperty private ComponentType type;
 	@JsonProperty("bom-ref") private String bomRef;
 	// @JsonProperty private Supplier supplier;

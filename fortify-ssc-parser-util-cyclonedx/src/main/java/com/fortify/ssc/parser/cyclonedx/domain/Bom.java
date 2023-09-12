@@ -40,14 +40,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fortify.util.io.Region;
 import com.fortify.util.json.ExtendedJsonParser;
 import com.fortify.util.json.StreamingJsonParser;
-import com.fortify.util.mapdb.CustomSerializerElsa;
 
 import lombok.Getter;
 import lombok.Setter;
 
 public final class Bom implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public static final CustomSerializerElsa<Bom> SERIALIZER = new CustomSerializerElsa<>(Bom.class);
 	@Getter @Setter private BomFormat bomFormat;
 	@Getter @Setter private String specVersion;	
 	// private String serialNumber;
@@ -71,12 +69,13 @@ public final class Bom implements Serializable {
 	 * 
 	 * @param db
 	 */
-	private Bom(final DB db) {
+	@SuppressWarnings("unchecked")
+    private Bom(final DB db) {
 		// We assume large scans may include a lot of components, so we use disk-backed collections.
 		// Note that alternatively we could use a hash & position-based approach like the SARIF .NET SDK
 		// (see DeferredDictionary and DeferredList) to avoid serializing entries to disk, but for now
 		// disk-backed collections seem to perform well and the implementation is much easier to understand.
-		this.componentsByBomRef = db.hashMap("componentsById", Serializer.STRING, Component.SERIALIZER).create();
+		this.componentsByBomRef = db.hashMap("componentsById", Serializer.STRING, Serializer.JAVA).create();
 	}
 
 	public static final Bom parseBom(DB db, ExtendedJsonParser jsonParser) throws IOException {

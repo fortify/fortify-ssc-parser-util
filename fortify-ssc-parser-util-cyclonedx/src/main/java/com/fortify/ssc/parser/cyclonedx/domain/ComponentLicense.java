@@ -29,14 +29,12 @@ import java.io.Serializable;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fortify.util.mapdb.CustomSerializerElsa;
 
 import lombok.Getter;
 
 @Getter
 public final class ComponentLicense implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public static final CustomSerializerElsa<ComponentLicense> SERIALIZER = new CustomSerializerElsa<>(ComponentLicense.class);
 	@JsonProperty private String id;
 	@JsonProperty private String name;
 	

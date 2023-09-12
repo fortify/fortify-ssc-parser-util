@@ -27,14 +27,12 @@ package com.fortify.ssc.parser.cyclonedx.domain;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fortify.util.mapdb.CustomSerializerElsa;
 
 import lombok.Getter;
 
 @Getter
 public final class Source implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public static final CustomSerializerElsa<Source> SERIALIZER = new CustomSerializerElsa<>(Source.class);
 	@JsonProperty private String name;
 	@JsonProperty private String url;
 }
