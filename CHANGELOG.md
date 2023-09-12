@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.7.1](https://www.github.com/fortify/fortify-ssc-parser-util/compare/v1.7.0...v1.7.1) (2023-09-12)
+
+
+### Bug Fixes
+
+* Compatibility update for Java 17 / SSC 23.2 ([d88e807](https://www.github.com/fortify/fortify-ssc-parser-util/commit/d88e80755dce8ce5f43325e034c44eed3bbd8726))
+
 ## [1.7.0](https://www.github.com/fortify/fortify-ssc-parser-util/compare/v1.6.3...v1.7.0) (2023-02-02)
 
 
