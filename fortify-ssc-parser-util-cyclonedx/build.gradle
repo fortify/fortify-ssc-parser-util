@@ -6,7 +6,7 @@ description = 'Fortify SSC Parser Utilities for parsing CycloneDX files'
 dependencies {
 	api project(':fortify-ssc-parser-util-json')
 	compileOnly 'com.fortify.plugin:plugin-api'
-	implementation(group: 'org.mapdb', name: 'mapdb', version: '3.0.8') { transitive = true }
-	testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
+	implementation(group: 'org.mapdb', name: 'mapdb', version: '3.0.10') { transitive = true }
+	testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
 	testImplementation 'com.fortify.plugin:plugin-api'
 }
