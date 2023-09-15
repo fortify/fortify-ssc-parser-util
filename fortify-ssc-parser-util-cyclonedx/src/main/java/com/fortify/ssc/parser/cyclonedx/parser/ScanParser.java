@@ -47,9 +47,7 @@ public class ScanParser {
 			.parse(scanData, scanEntry);
 		
 		checkBomFormat(bomFormat);
-		if ( PluginXmlHelper.getPluginXmlDescriptor().isMinimumApiVersion(1, 2) ) {
-		    setSBOMEntry();
-		}
+		setSBOMEntry();
 		scanBuilder.setNumFiles(numFiles);
 		scanBuilder.completeScan();
 	}
@@ -65,15 +63,22 @@ public class ScanParser {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     private void setSBOMEntry() {
-	    try {
-            // We use reflection to be able to share same codebase with plugins
-            // for older SSC versions.
-            Class<? extends Enum> sbomTypeClazz = (Class<? extends Enum>) Class.forName("com.fortify.plugin.api.SbomType");
-            Method m = scanBuilder.getClass().getMethod("setSBOMEntry", ScanEntry.class, sbomTypeClazz);
-            m.setAccessible(true);
-            m.invoke(scanBuilder, scanEntry, Enum.valueOf(sbomTypeClazz, "CYCLONEDX_JSON"));
-	    } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
-	        throw new RuntimeException("Unable to invoke method ScanBuilder::setSBOMEntry", e);
+	    if ( PluginXmlHelper.getPluginXmlDescriptor().isMinimumApiVersion(1, 2) ) {
+    	    try {
+                // We use reflection to be able to share same codebase with plugins
+                // for older SSC versions, and because the updated plugin-api artifact
+    	        // hasn't been published to Maven Central yet. We could consider updating
+    	        // the plugin-api dependency version (once available) and use a regular 
+    	        // method call; this shouldn't affect plugin variants for older SSC versions
+    	        // as the plugin-api artifact doesn't get included in the plugin jar, and
+    	        // we explicitly check API version before trying to invoke this method.
+    	        Class<? extends Enum> sbomTypeClazz = (Class<? extends Enum>) Class.forName("com.fortify.plugin.api.SbomType");
+                Method m = scanBuilder.getClass().getMethod("setSBOMEntry", ScanEntry.class, sbomTypeClazz);
+                m.setAccessible(true);
+                m.invoke(scanBuilder, scanEntry, Enum.valueOf(sbomTypeClazz, "CYCLONEDX_JSON"));
+    	    } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
+    	        throw new RuntimeException("Unable to invoke method ScanBuilder::setSBOMEntry", e);
+    	    }
 	    }
     }
 }
