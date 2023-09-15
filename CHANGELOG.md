@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0](https://www.github.com/fortify/fortify-ssc-parser-util/compare/v1.7.1...v2.0.0) (2023-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* Some public API class/method changes
+
+### Features
+
+* Add support for new SSC 23.2 setSBOM method ([0240880](https://www.github.com/fortify/fortify-ssc-parser-util/commit/02408808e66e5e21375974856a50f4592cad9410))
+* Some public API class/method changes ([0240880](https://www.github.com/fortify/fortify-ssc-parser-util/commit/02408808e66e5e21375974856a50f4592cad9410))
+
 ### [1.7.1](https://www.github.com/fortify/fortify-ssc-parser-util/compare/v1.7.0...v1.7.1) (2023-09-12)
 
 
