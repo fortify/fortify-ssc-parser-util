@@ -24,8 +24,35 @@
  ******************************************************************************/
 package com.fortify.util.ssc.parser.json;
 
-public class ScanDataStreamingJsonParser extends AbstractScanDataStreamingJsonParser<ScanDataStreamingJsonParser> {
-	public ScanDataStreamingJsonParser() {
-		super(".json");
+import java.io.IOException;
+import java.io.InputStream;
+
+import com.fortify.plugin.api.ScanData;
+import com.fortify.plugin.api.ScanEntry;
+import com.fortify.util.io.Region;
+import com.fortify.util.json.AbstractStreamingJsonParser;
+
+public class ScanDataStreamingJsonParser extends AbstractStreamingJsonParser<ScanDataStreamingJsonParser> {
+	/**
+	 * Parse JSON contents retrieved from the given {@link ScanData} using
+	 * the previously configured handlers.
+	 * @param scanData {@link ScanData} instance
+	 * @throws IOException if there is any error while accessing or parsing the input data
+	 */ 
+	public final void parse(ScanData scanData, ScanEntry scanEntry) throws IOException {
+		parse(scanData, scanEntry, null);
+	}
+	
+	/**
+	 * Parse JSON contents retrieved from the given {@link ScanData} object
+	 * for the given input region, using the previously configured handlers.
+	 * @param scanData {@link ScanData} instance
+	 * @param inputRegion {@link Region} to be parsed
+	 * @throws IOException if there is any error while accessing or parsing the input data
+	 */
+	public final void parse(ScanData scanData, ScanEntry scanEntry, Region inputRegion) throws IOException {
+		try ( final InputStream inputStream = scanData.getInputStream(scanEntry) ) {
+			parse(inputStream, inputRegion);
+		}
 	}
 }

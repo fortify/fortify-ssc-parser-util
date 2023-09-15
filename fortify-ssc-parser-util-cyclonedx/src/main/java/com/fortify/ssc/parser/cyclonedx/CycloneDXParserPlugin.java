@@ -7,11 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import com.fortify.plugin.api.ScanBuilder;
 import com.fortify.plugin.api.ScanData;
+import com.fortify.plugin.api.ScanEntry;
 import com.fortify.plugin.api.ScanParsingException;
 import com.fortify.plugin.api.VulnerabilityHandler;
 import com.fortify.plugin.spi.ParserPlugin;
 import com.fortify.ssc.parser.cyclonedx.parser.ScanParser;
 import com.fortify.ssc.parser.cyclonedx.parser.VulnerabilitiesParser;
+import com.fortify.util.ssc.parser.ScanEntryHelper;
 
 /**
  * Main {@link ParserPlugin} implementation for parsing CycloneDX results; see
@@ -42,11 +44,21 @@ public class CycloneDXParserPlugin implements ParserPlugin<CustomVulnAttribute> 
 
     @Override
     public void parseScan(final ScanData scanData, final ScanBuilder scanBuilder) throws ScanParsingException, IOException {
-        new ScanParser(scanData, scanBuilder).parse();
+        new ScanParser(scanData, getScanEntry(scanData), scanBuilder).parse();
     }
 
 	@Override
 	public void parseVulnerabilities(final ScanData scanData, final VulnerabilityHandler vulnerabilityHandler) throws ScanParsingException, IOException {
-		new VulnerabilitiesParser(scanData, vulnerabilityHandler).parse();
+		new VulnerabilitiesParser(scanData, getScanEntry(scanData), vulnerabilityHandler).parse();
 	}
+	
+	private final ScanEntry getScanEntry(final ScanData scanData) {
+        return ScanEntryHelper.getScanEntryByName(scanData, this::isMatchingScanEntryName);
+    }
+	
+	private final boolean isMatchingScanEntryName(String name) {
+	    return name.endsWith(".cdx.json") || name.endsWith(".json");
+	}
+	
+	
 }

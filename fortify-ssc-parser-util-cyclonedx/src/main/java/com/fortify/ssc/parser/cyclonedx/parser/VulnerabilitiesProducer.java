@@ -12,7 +12,7 @@ import com.fortify.ssc.parser.cyclonedx.domain.Bom;
 import com.fortify.ssc.parser.cyclonedx.domain.Component;
 import com.fortify.ssc.parser.cyclonedx.domain.Vulnerability;
 import com.fortify.ssc.parser.cyclonedx.domain.Vulnerability.ComponentReference;
-import com.fortify.util.ssc.parser.EngineTypeHelper;
+import com.fortify.util.ssc.parser.PluginXmlHelper;
 import com.fortify.util.ssc.parser.HandleDuplicateIdVulnerabilityHandler;
 
 public final class VulnerabilitiesProducer {
@@ -44,7 +44,7 @@ public final class VulnerabilitiesProducer {
 			StaticVulnerabilityBuilder vb = vulnerabilityHandler.startStaticVulnerability(getInstanceId(component, vulnerability));
 			
 			// Set meta-data
-			vb.setEngineType(EngineTypeHelper.getEngineType());
+			vb.setEngineType(PluginXmlHelper.getPluginXmlDescriptor().getEngineType());
 			
 			vb.setKingdom(FortifyKingdom.ENVIRONMENT.getKingdomName());
 			vb.setAnalyzer(FortifyAnalyser.CONFIGURATION.getAnalyserName());

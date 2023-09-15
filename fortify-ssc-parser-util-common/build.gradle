@@ -1,5 +1,7 @@
 description = 'Fortify SSC Parser Utilities common code'
 
+apply plugin: 'io.freefair.lombok'
+
 dependencies {
     // dependencies required by common code
     api(group: 'com.fasterxml.jackson.core', name: 'jackson-annotations') { transitive = false }
