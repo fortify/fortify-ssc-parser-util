@@ -104,7 +104,7 @@ public final class VulnerabilitiesProducer {
 			vb.setStringCustomAttributeValue(CustomVulnAttribute.componentPurl, component.getPurlAsString());
 			vb.setStringCustomAttributeValue(CustomVulnAttribute.componentLicenses, component.getLicensesAsString());
     		
-			vb.setStringCustomAttributeValue(CustomVulnAttribute.method, vulnerability.getVulnMethod().getVulnRatingMethod());
+			vb.setStringCustomAttributeValue(CustomVulnAttribute.method, vulnerability.getVulnMethod());
 			vb.setStringCustomAttributeValue(CustomVulnAttribute.score, String.valueOf(vulnerability.getVulnScore()));
 			vb.setStringCustomAttributeValue(CustomVulnAttribute.vector, vulnerability.getVulnVector());
 			
