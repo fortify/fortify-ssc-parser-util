@@ -1,8 +1,5 @@
 package com.fortify.ssc.parser.cyclonedx.parser;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.fortify.plugin.api.BasicVulnerabilityBuilder.Priority;
