@@ -57,21 +57,21 @@
 				{
 					"type": "template",
 					"title": "Score",
-					"key": "customAttributes.score",
+					"key": "customAttributes.ratingScore",
 					"templateId": "SIMPLE",
 					"dataType": "string"
 				},
 				{
 					"type": "template",
 					"title": "Method",
-					"key": "customAttributes.method",
+					"key": "customAttributes.ratingMethod",
 					"templateId": "SIMPLE",
 					"dataType": "string"
 				},
 				{
 					"type": "template",
 					"title": "Vector",
-					"key": "customAttributes.vector",
+					"key": "customAttributes.ratingVector",
 					"templateId": "SIMPLE",
 					"dataType": "string"
 				}

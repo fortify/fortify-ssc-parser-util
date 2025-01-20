@@ -1,5 +1,8 @@
 package com.fortify.ssc.parser.cyclonedx.parser;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.fortify.plugin.api.BasicVulnerabilityBuilder.Priority;
@@ -12,6 +15,7 @@ import com.fortify.ssc.parser.cyclonedx.domain.Bom;
 import com.fortify.ssc.parser.cyclonedx.domain.Component;
 import com.fortify.ssc.parser.cyclonedx.domain.Vulnerability;
 import com.fortify.ssc.parser.cyclonedx.domain.Vulnerability.ComponentReference;
+import com.fortify.ssc.parser.cyclonedx.domain.Vulnerability.VulnerabilityRating;
 import com.fortify.util.ssc.parser.PluginXmlHelper;
 import com.fortify.util.ssc.parser.HandleDuplicateIdVulnerabilityHandler;
 
@@ -104,9 +108,10 @@ public final class VulnerabilitiesProducer {
 			vb.setStringCustomAttributeValue(CustomVulnAttribute.componentPurl, component.getPurlAsString());
 			vb.setStringCustomAttributeValue(CustomVulnAttribute.componentLicenses, component.getLicensesAsString());
     		
-			vb.setStringCustomAttributeValue(CustomVulnAttribute.method, vulnerability.getVulnMethod());
-			vb.setStringCustomAttributeValue(CustomVulnAttribute.score, String.valueOf(vulnerability.getVulnScore()));
-			vb.setStringCustomAttributeValue(CustomVulnAttribute.vector, vulnerability.getVulnVector());
+			VulnerabilityRating rating = vulnerability.getHighestVulnerabilityRating();
+			vb.setStringCustomAttributeValue(CustomVulnAttribute.ratingScore, String.valueOf(rating.getScore()));
+			vb.setStringCustomAttributeValue(CustomVulnAttribute.ratingMethod, rating.getMethod().toString());
+			vb.setStringCustomAttributeValue(CustomVulnAttribute.ratingVector, rating.getVector());
 			
     		vb.completeVulnerability();
 		}
