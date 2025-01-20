@@ -51,6 +51,34 @@
 		},
 		{
 			"type": "template",
+			"title": "Rating Details",
+			"templateId": "TITLEBOX",
+			"items": [
+				{
+					"type": "template",
+					"title": "Score",
+					"key": "customAttributes.ratingScore",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "Method",
+					"key": "customAttributes.ratingMethod",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				},
+				{
+					"type": "template",
+					"title": "Vector",
+					"key": "customAttributes.ratingVector",
+					"templateId": "SIMPLE",
+					"dataType": "string"
+				}
+			]
+		},
+		{
+			"type": "template",
 			"title": "Component Details",
 			"templateId": "TITLEBOX",
 			"items": [
