@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://www.github.com/fortify/fortify-ssc-parser-util/compare/v2.0.0...v2.1.0) (2025-01-20)
+
+
+### Features
+
+* Display vulnerability rating on SSC Audit page ([#24](https://www.github.com/fortify/fortify-ssc-parser-util/issues/24)) ([2f4af10](https://www.github.com/fortify/fortify-ssc-parser-util/commit/2f4af10f05f2b74a36e90bd52fc287944af9e1aa))
+
 ## [2.0.0](https://www.github.com/fortify/fortify-ssc-parser-util/compare/v1.7.1...v2.0.0) (2023-09-15)
 
 
