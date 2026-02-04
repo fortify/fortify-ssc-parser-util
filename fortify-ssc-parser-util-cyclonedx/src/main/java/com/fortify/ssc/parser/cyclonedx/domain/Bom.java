@@ -37,6 +37,7 @@ import org.mapdb.DB;
 import org.mapdb.Serializer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fortify.util.io.Region;
 import com.fortify.util.json.ExtendedJsonParser;
 import com.fortify.util.json.StreamingJsonParser;
@@ -105,7 +106,9 @@ public final class Bom implements Serializable {
 	@Getter
 	public static final class BomMetadata {
 		@JsonProperty private Date timestamp;
-		@JsonProperty private BomTool[] tools;
+		@JsonProperty 
+		@JsonDeserialize(using = BomToolsDeserializer.class)
+		private BomTool[] tools;
 		//@JsonProperty private BomAuthor[] authors;
 		//@JsonProperty private Component component;
 		//@JsonProperty private BomManufacturer manufacture;
