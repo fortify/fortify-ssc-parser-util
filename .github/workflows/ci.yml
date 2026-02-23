@@ -13,7 +13,7 @@ jobs:
     
       - name: Prepare GitHub release
         id: create_prod_release
-        uses: GoogleCloudPlatform/release-please-action@v2
+        uses: GoogleCloudPlatform/release-please-action@v4
         if: github.ref == 'refs/heads/main'
         with:
           command: github-release
@@ -35,7 +35,7 @@ jobs:
           
       - name: Publish to Sonatype
         if: github.ref == 'refs/heads/main'
-        run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository -PisReleaseVersion=${{ env.DO_RELEASE }}
+        run: ./gradlew publishToMavenCentral closeAndReleaseSonatypeStagingRepository -PisReleaseVersion=${{ env.DO_RELEASE }}
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PWD }}
