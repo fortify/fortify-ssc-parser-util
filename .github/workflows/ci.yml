@@ -35,7 +35,7 @@ jobs:
           
       - name: Publish to Maven Central
         if: github.ref == 'refs/heads/main'
-        run: ./gradlew publishToMavenCentral closeAndReleaseSonatypeStagingRepository -PisReleaseVersion=${{ env.DO_RELEASE }}
+        run: ./gradlew publishToMavenCentral closeAndReleaseMavenCentralStagingRepository -PisReleaseVersion=${{ env.DO_RELEASE }}
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PWD }}
