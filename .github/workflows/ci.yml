@@ -39,8 +39,8 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PWD }}
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.MAVEN_CENTRAL_USER }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD  }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USER }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD  }}
           
       - name: Prepare release PR
         uses: GoogleCloudPlatform/release-please-action@v4
