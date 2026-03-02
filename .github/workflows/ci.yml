@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - name: Check-out source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
     
       - name: Prepare GitHub release
         id: create_prod_release
-        uses: GoogleCloudPlatform/release-please-action@v2
+        uses: GoogleCloudPlatform/release-please-action@v4
         if: github.ref == 'refs/heads/main'
         with:
           command: github-release
@@ -33,17 +33,17 @@ jobs:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PWD }}
           
-      - name: Publish to OSSRH
+      - name: Publish to Maven Central
         if: github.ref == 'refs/heads/main'
-        run: ./gradlew publishToOSSRH closeAndReleaseOSSRHStagingRepository -PisReleaseVersion=${{ env.DO_RELEASE }}
+        run: ./gradlew publishToMavenCentral closeAndReleaseMavenCentralStagingRepository -PisReleaseVersion=${{ env.DO_RELEASE }}
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PWD }}
-          ORG_GRADLE_PROJECT_OSSRHUsername: ${{ secrets.OSSRH_USER_NAME }}
-          ORG_GRADLE_PROJECT_OSSRHPassword: ${{ secrets.OSSRH_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USER }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD  }}
           
       - name: Prepare release PR
-        uses: GoogleCloudPlatform/release-please-action@v2
+        uses: GoogleCloudPlatform/release-please-action@v4
         if: github.ref == 'refs/heads/main'
         with:
           command: release-pr
