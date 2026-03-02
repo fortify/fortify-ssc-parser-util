@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/fortify/fortify-ssc-parser-util/compare/v2.1.0...v2.1.1) (2026-03-02)
+
+
+### Bug Fixes
+
+* Fix parsing of CycloneDX 1.5+ inputs ([53b3a84](https://github.com/fortify/fortify-ssc-parser-util/commit/53b3a84f140178caacc5bb1e1c2c56de26a5883b))
+
 ## [2.1.0](https://www.github.com/fortify/fortify-ssc-parser-util/compare/v2.0.0...v2.1.0) (2025-01-20)
 
 
