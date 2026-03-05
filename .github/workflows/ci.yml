@@ -1,4 +1,4 @@
-on: 
+﻿on: 
   push: 
     branches:
       - '**'
@@ -13,12 +13,11 @@ jobs:
     
       - name: Prepare GitHub release
         id: create_prod_release
-        uses: GoogleCloudPlatform/release-please-action@v4
+        uses: googleapis/release-please-action@v4
         if: github.ref == 'refs/heads/main'
         with:
-          command: github-release
           release-type: simple
-          package-name: ${{ github.event.repository.name }}
+          skip-github-pull-request: true
           
       - name: Define build properties
         run: |
@@ -43,10 +42,8 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD  }}
           
       - name: Prepare release PR
-        uses: GoogleCloudPlatform/release-please-action@v4
+        uses: googleapis/release-please-action@v4
         if: github.ref == 'refs/heads/main'
         with:
-          command: release-pr
           release-type: simple
-          package-name: ${{ github.event.repository.name }}
-          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"api","section":"API changes","hidden":false}]'
+          skip-github-release: true
