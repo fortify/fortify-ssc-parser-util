@@ -7,7 +7,13 @@ on:
   schedule:
     - cron: '16 0 * * 5'
 
+permissions: read-all
+  
 jobs:
   fortify:
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
     uses: fortify/.github/.github/workflows/fortify-analysis.yml@main
     secrets: inherit
