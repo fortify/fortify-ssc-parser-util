@@ -3,6 +3,10 @@ on:
     branches:
       - '**'
 
+permissions:
+  contents: write
+  pull-requests: write
+  
 name: CI
 jobs:
   ci:
