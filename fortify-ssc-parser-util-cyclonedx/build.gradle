@@ -3,9 +3,8 @@ description = 'Fortify SSC Parser Utilities for parsing CycloneDX files'
 apply plugin: 'io.freefair.lombok'
 
 dependencies {
-	api project(':fortify-ssc-parser-util-json')
-	compileOnly 'com.fortify.plugin:plugin-api'
-	implementation(group: 'org.mapdb', name: 'mapdb', version: '3.0.10') { transitive = true }
-	testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
-	testImplementation 'com.fortify.plugin:plugin-api'
+    api project(':fortify-ssc-parser-util-json')
+    compileOnly 'com.fortify.plugin:plugin-api'
+    testImplementation('org.junit.jupiter:junit-jupiter-params:5.14.4')
+    testImplementation('com.fortify.plugin:plugin-api')
 }
