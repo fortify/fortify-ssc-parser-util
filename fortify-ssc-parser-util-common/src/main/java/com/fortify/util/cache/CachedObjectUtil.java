@@ -25,6 +25,7 @@
 package com.fortify.util.cache;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 
@@ -59,7 +60,7 @@ public final class CachedObjectUtil {
      * @param objectName Name of object type (for logging: "artifact", "rule", etc.)
      * @return Object if found and unwrapped, null otherwise
      */
-    public static <T> T getOrNull(java.util.List<CachedObject<T>> list, Integer index,
+    public static <T> T getOrNull(List<CachedObject<T>> list, Integer index,
             Logger logger, String objectName) {
         // Null or empty check
         if (index == null || list == null || list.isEmpty()) {
