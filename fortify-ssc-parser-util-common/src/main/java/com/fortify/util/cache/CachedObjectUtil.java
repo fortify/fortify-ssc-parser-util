@@ -68,7 +68,7 @@ public final class CachedObjectUtil {
 
         // Bounds check
         if (index < 0 || index >= list.size()) {
-            logger.warn("SARIF input error: Invalid {} index {}", objectName, index);
+            logger.warn("Input error: Invalid {} index {}", objectName, index);
             return null;
         }
 

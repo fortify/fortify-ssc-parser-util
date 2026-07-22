@@ -53,8 +53,6 @@ import com.fortify.util.io.RegionInputStream;
  * Uses only Jackson (already in use) and java.lang.ref (JDK).
  * Eliminates MapDB + Eclipse Collections + Guava (45MB of bloat).
  * 
- * Inspired by SARIF .NET SDK's DeferredDictionary/DeferredList.
- * 
  * @param <T> Type of cached object
  */
 public class CachedObject<T> {
