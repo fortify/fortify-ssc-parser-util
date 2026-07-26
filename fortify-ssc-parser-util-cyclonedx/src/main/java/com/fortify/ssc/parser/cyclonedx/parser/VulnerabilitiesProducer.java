@@ -1,6 +1,10 @@
 package com.fortify.ssc.parser.cyclonedx.parser;
 
+import java.io.IOException;
+
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fortify.plugin.api.BasicVulnerabilityBuilder.Priority;
 import com.fortify.plugin.api.FortifyAnalyser;
@@ -17,6 +21,7 @@ import com.fortify.util.ssc.parser.PluginXmlHelper;
 import com.fortify.util.ssc.parser.HandleDuplicateIdVulnerabilityHandler;
 
 public final class VulnerabilitiesProducer {
+	private static final Logger LOG = LoggerFactory.getLogger(VulnerabilitiesProducer.class);
 	private final VulnerabilityHandler vulnerabilityHandler;
 	
 	/**
@@ -30,11 +35,27 @@ public final class VulnerabilitiesProducer {
 	/**
 	 * This method produces a Fortify vulnerability based on the given
 	 * {@link Bom} and {@link Vulnerability} instances.
+	 * 
+	 * Retrieves components by bomRef, reloading from CachedObject if needed.
+	 * 
+	 * @param bom The parsed CycloneDX BOM with cached components
+	 * @param vulnerability The vulnerability to process
+	 * @throws IOException if component reload fails
 	 */
-	public final void produceVulnerabilities(Bom bom, Vulnerability vulnerability) {
+	public final void produceVulnerabilities(Bom bom, Vulnerability vulnerability) throws IOException {
 		ComponentReference[] componentRefs = vulnerability.getAffects();
 		for ( ComponentReference componentRef : componentRefs ) {
-			produceVulnerability(bom, bom.getComponentByBomRef(componentRef.getRef()), vulnerability);
+			try {
+				Component component = bom.getComponentByBomRef(componentRef.getRef());
+				if (component != null) {
+					produceVulnerability(bom, component, vulnerability);
+				} else {
+					LOG.warn("Component not found with bomRef: {}", componentRef.getRef());
+				}
+			} catch (IOException e) {
+				LOG.error("Failed to retrieve/reload component with bomRef: {}", componentRef.getRef(), e);
+				throw e;
+			}
 		}
 	}
 	
