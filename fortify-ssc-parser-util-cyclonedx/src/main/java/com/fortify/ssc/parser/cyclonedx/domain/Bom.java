@@ -29,8 +29,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -43,6 +41,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fortify.util.cache.CachedObject;
+import com.fortify.util.cache.CachedObjectHashMap;
 import com.fortify.util.io.Region;
 import com.fortify.util.json.ExtendedJsonParser;
 import com.fortify.util.json.StreamingJsonParser;
@@ -53,7 +52,7 @@ import lombok.Setter;
 public final class Bom implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(Bom.class);
-    
+
     @Getter
     @Setter
     private BomFormat bomFormat;
@@ -65,7 +64,7 @@ public final class Bom implements Serializable {
     @Getter
     @Setter
     private BomMetadata metadata;
-    private final Map<String, CachedObject<Component>> componentsByBomRef;
+    private final CachedObjectHashMap<String, Component> componentsByBomRef;
     // private Service[] services;
     // private ExternalReference[] externalReferences;
     // private Dependency[] dependencies;
@@ -88,7 +87,7 @@ public final class Bom implements Serializable {
         // Components are cached with their byte regions, enabling lazy reload on
         // garbage collection. This replaces MapDB (45MB) with lightweight SoftReference
         // caching, significantly reducing JAR size and dependencies.
-        this.componentsByBomRef = new HashMap<>();
+        this.componentsByBomRef = new CachedObjectHashMap<>();
     }
 
     /**
@@ -98,38 +97,47 @@ public final class Bom implements Serializable {
      * - Fast path: Components served from SoftReference cache (~1 microsecond)
      * - Slow path (rare): Components re-parsed from Region on GC
      * 
-     * @param jsonParser ExtendedJsonParser positioned at root
-     * @param sourceInputStream Source stream (must remain open during parseVulnerabilities)
-     * @param objectMapper Jackson ObjectMapper for component deserialization
+     * @param jsonParser        ExtendedJsonParser positioned at root
+     * @param sourceInputStream Source stream (must remain open during
+     *                          parseVulnerabilities)
+     * @param objectMapper      Jackson ObjectMapper for component deserialization
      * @return Parsed BOM with cached components
      * @throws IOException on parse failure
      */
     public static final Bom parseBom(ExtendedJsonParser jsonParser, InputStream sourceInputStream,
             ObjectMapper objectMapper) throws IOException {
         Bom bom = new Bom();
-        
-        // Create custom handler for components to capture byte positions for CachedObject
         StreamingJsonParser streamingParser = new StreamingJsonParser()
                 .handler("/bomFormat", BomFormat.class, bom::setBomFormat)
                 .handler("/specVersion", String.class, bom::setSpecVersion)
                 .handler("/metadata", BomMetadata.class, bom::setMetadata)
-                .handler("/vulnerabilities", bom::setVulnerabilitiesRegion);
-        
-        // Custom handler for components: capture byte positions and wrap in CachedObject
-        streamingParser.handler("/components/*", jp -> {
-            try {
-                CachedObject<Component> cached = CachedObject.parse(
-                    (JsonParser) jp, Component.class, sourceInputStream, objectMapper
-                );
-                bom.addComponentCached(cached);
-            } catch (IOException e) {
-                LOG.error("Failed to parse component with byte region", e);
-                throw new RuntimeException("Component parsing failed", e);
-            }
-        });
-        
+                .handler("/vulnerabilities", bom::setVulnerabilitiesRegion)
+                .handler("/components/*", jp -> bom.setComponentCached(jp, sourceInputStream, objectMapper));
         streamingParser.parseObjectProperties(jsonParser, "/");
         return bom;
+    }
+
+    /**
+     * Parse and cache a single component with byte region tracking.
+     * 
+     * @param jp                JsonParser positioned at component object
+     * @param sourceInputStream Source stream for region-based reload
+     * @param objectMapper      ObjectMapper for deserialization
+     * @throws IOException on parse failure
+     */
+    private final void setComponentCached(JsonParser jp, InputStream sourceInputStream,
+            ObjectMapper objectMapper) throws IOException {
+        try {
+            CachedObject<Component> cached = CachedObject.parse(
+                    jp, Component.class, sourceInputStream, objectMapper);
+            Component component = cached.getOrReload();
+            componentsByBomRef.put(component.getBomRef(), cached);
+            LOG.trace("Added cached component: bomRef={}, cache_status={}",
+                    component.getBomRef(), cached.getCacheStatus());
+        } catch (IOException e) {
+            LOG.error("Failed to parse component with byte region", e);
+            throw new RuntimeException("Component parsing failed", e);
+        }
     }
 
     /**
@@ -140,26 +148,7 @@ public final class Bom implements Serializable {
      * @throws IOException if reload fails
      */
     public final Component getComponentByBomRef(String bomRef) throws IOException {
-        CachedObject<Component> cached = componentsByBomRef.get(bomRef);
-        if (cached != null) {
-            return cached.getOrReload();
-        }
-        return null;
-    }
-
-    /**
-     * Add cached component to the BOM.
-     * 
-     * Extracts bomRef from component and stores with CachedObject wrapper.
-     * 
-     * @param cached CachedObject wrapping the component
-     * @throws IOException if extracting bomRef fails
-     */
-    private final void addComponentCached(CachedObject<Component> cached) throws IOException {
-        Component component = cached.getOrReload();
-        componentsByBomRef.put(component.getBomRef(), cached);
-        LOG.trace("Added cached component: bomRef={}, cache_status={}", 
-            component.getBomRef(), cached.getCacheStatus());
+        return componentsByBomRef.getCachedObject(bomRef);
     }
 
     private final void setVulnerabilitiesRegion(ExtendedJsonParser jp) throws IOException {

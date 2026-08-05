@@ -25,61 +25,39 @@
 package com.fortify.util.cache;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Utility methods for working with CachedObject collections.
+ * HashMap wrapper for storing CachedObject values.
  * 
- * Reduces boilerplate in getter methods by centralizing:
- * - Null checks
- * - Bounds checks
- * - Exception handling
- * - Logging
+ * Provides transparent access to cached objects without exposing
+ * CachedObject in the collection type signature.
+ * 
+ * **Key principle**: Callers remain responsible for creating and putting
+ * CachedObject instances. This class only simplifies the get operation.
+ * 
+ * @author Sangamesh Vijaykumar
+ * 
+ * @param <K> Key type
+ * @param <V> Value type (the unwrapped object, not CachedObject)
  */
-public final class CachedObjectUtil {
+public class CachedObjectHashMap<K, V> extends HashMap<K, CachedObject<V>> {
+    private static final Logger LOG = LoggerFactory.getLogger(CachedObjectHashMap.class);
 
-    private CachedObjectUtil() {
-    } // Static utility class
-
-    /**
-     * Get object from cached list with full error handling.
-     * 
-     * **Usage in getters:**
-     * ```java
-     * public Artifact getArtifactByIndex(Integer index) {
-     * return CachedObjectUtil.getOrNull(artifactsByIndex, index, LOG, "artifact");
-     * }
-     * ```
-     * 
-     * @param <T>        Object type
-     * @param list       List of CachedObject
-     * @param index      Index to retrieve
-     * @param logger     Logger for warnings/errors
-     * @param objectName Name of object type (for logging: "artifact", "rule", etc.)
-     * @return Object if found and unwrapped, null otherwise
-     */
-    public static <T> T getOrNull(List<CachedObject<T>> list, Integer index,
-            Logger logger, String objectName) {
-        // Null or empty check
-        if (index == null || list == null || list.isEmpty()) {
+    public V getCachedObject(K key) throws IOException {
+        CachedObject<V> cached = get(key);
+        if (cached == null) {
+            LOG.debug("Input error: key {} not found", key);
             return null;
         }
-
-        // Bounds check
-        if (index < 0 || index >= list.size()) {
-            logger.warn("Input error: Invalid {} index {}", objectName, index);
-            return null;
-        }
-
-        // Unwrap CachedObject
         try {
-            CachedObject<T> cached = list.get(index);
             return cached.getOrReload();
         } catch (IOException e) {
-            logger.error("Failed to reload {} at index {}", objectName, index, e);
-            return null;
+            LOG.error("Failed to reload cached object with key {}", key, e);
+            throw e;
         }
     }
 }
