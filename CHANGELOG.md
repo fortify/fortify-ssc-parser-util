@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.0.0](https://github.com/fortify/fortify-ssc-parser-util/compare/v2.1.1...v3.0.0) (2026-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove MapDB dependency & usages
+
+### api
+
+* Remove MapDB dependency & usages ([ab09386](https://github.com/fortify/fortify-ssc-parser-util/commit/ab0938661e5b356020302d96fdd353a96df04d71))
+
+
+### Features
+
+* Add lightweight memory/GC-friendly `CachedObject` infrastructure ([ab09386](https://github.com/fortify/fortify-ssc-parser-util/commit/ab0938661e5b356020302d96fdd353a96df04d71))
+
+
+### Bug Fixes
+
+* Upgrade dependencies ([ab09386](https://github.com/fortify/fortify-ssc-parser-util/commit/ab0938661e5b356020302d96fdd353a96df04d71))
+
 ## [2.1.1](https://github.com/fortify/fortify-ssc-parser-util/compare/v2.1.0...v2.1.1) (2026-03-12)
 
 
