@@ -53,24 +53,17 @@ public final class Bom implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(Bom.class);
 
-    @Getter
-    @Setter
-    private BomFormat bomFormat;
-    @Getter
-    @Setter
-    private String specVersion;
+    @Getter @Setter private BomFormat bomFormat;
+    @Getter @Setter private String specVersion;
     // private String serialNumber;
     // private Integer version;
-    @Getter
-    @Setter
-    private BomMetadata metadata;
+    @Getter @Setter private BomMetadata metadata;
     private final CachedObjectHashMap<String, Component> componentsByBomRef;
     // private Service[] services;
     // private ExternalReference[] externalReferences;
     // private Dependency[] dependencies;
     // private Composition[] compositions;
-    @Getter
-    private Region vulnerabilitiesRegion = null;
+    @Getter private Region vulnerabilitiesRegion = null;
     // @JsonProperty private JSFSignature[] signature;
 
     public static enum BomFormat {
