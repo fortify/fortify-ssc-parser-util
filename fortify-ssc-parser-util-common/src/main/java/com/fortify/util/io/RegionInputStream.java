@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.util.io;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -38,16 +39,24 @@ import org.apache.commons.io.input.BoundedInputStream;
  * @author Ruud Senden
  *
  */
-public class RegionInputStream extends BoundedInputStream {
+public class RegionInputStream extends FilterInputStream {
 
 	public RegionInputStream(InputStream in, Region region, boolean propagateClose) throws IOException {
-		super(in, region==null?-1:region.getEnd());
-		if ( region!=null ) {
-			if ( skip(region.getStart()) != region.getStart() ) {
+		super(buildStream(in, region, propagateClose));
+	}
+
+	private static BoundedInputStream buildStream(InputStream in, Region region, boolean propagateClose) throws IOException {
+		BoundedInputStream bounded = BoundedInputStream.builder()
+				.setInputStream(in)
+				.setMaxCount(region == null ? -1 : region.getEnd())
+				.setPropagateClose(propagateClose)
+				.get();
+		if ( region != null ) {
+			if ( bounded.skip(region.getStart()) != region.getStart() ) {
 				throw new IllegalStateException("Number of actual bytes skipped doesn't equal request number of bytes to be skipped");
 			}
 		}
-		setPropagateClose(propagateClose);
+		return bounded;
 	}
 
 }

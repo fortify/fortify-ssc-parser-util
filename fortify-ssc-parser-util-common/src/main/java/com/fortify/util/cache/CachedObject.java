@@ -112,13 +112,13 @@ public class CachedObject<T> {
     public static <T> CachedObject<T> parse(JsonParser jp, Class<T> type,
             InputStream sourceInputStream, ObjectMapper objectMapper) throws IOException {
         // Phase 1: Capture byte position BEFORE parsing
-        long startPosition = jp.getCurrentLocation().getByteOffset();
+        long startPosition = jp.currentLocation().getByteOffset();
 
         // Phase 2: Parse object (single deserialize pass)
         T object = jp.readValueAs(type);
 
         // Phase 3: Capture byte position AFTER parsing
-        long endPosition = jp.getCurrentLocation().getByteOffset();
+        long endPosition = jp.currentLocation().getByteOffset();
 
         // Phase 4: Create Region
         Region region = new Region(startPosition, endPosition);

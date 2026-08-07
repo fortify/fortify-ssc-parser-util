@@ -76,7 +76,7 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	}
 	
 	public final <V> T handler(String path, Class<V> clazz, BiConsumer<String, V> handler) {
-		return handler(path, jp->handler.accept(jp.getCurrentName(), jp.readValueAs(clazz)));
+		return handler(path, jp->handler.accept(jp.currentName(), jp.readValueAs(clazz)));
 	}
 	
 	public final T expectedStartTokens(JsonToken... jsonTokens) {
@@ -168,9 +168,9 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	 * parsing is handled by registered {@link JsonHandler} instances.
 	 */
 	private final void parse(final ExtendedJsonParser jsonParser, String parentPath) throws IOException {
-		JsonToken currentToken = jsonParser.getCurrentToken();
+		JsonToken currentToken = jsonParser.currentToken();
 		if ( currentToken != null && (currentToken==JsonToken.START_ARRAY || currentToken==JsonToken.START_OBJECT || currentToken.isScalarValue())) {
-			String currentPath = getPath(parentPath, jsonParser.getCurrentName());
+			String currentPath = getPath(parentPath, jsonParser.currentName());
 			LOG.trace("Processing "+currentPath);
 			JsonHandler handler = pathToHandlerMap.computeIfAbsent(currentPath, k->pathToHandlerMap.get(getPath(parentPath, "*")));
 			if ( handler != null ) {
@@ -200,7 +200,7 @@ public abstract class AbstractStreamingJsonParser<T extends AbstractStreamingJso
 	 * Parse the children of the current JSON object or JSON array.
 	 */
 	private final void parseObjectOrArrayChildren(ExtendedJsonParser jsonParser, String currentPath) throws IOException {
-		JsonToken currentToken = jsonParser.getCurrentToken();
+		JsonToken currentToken = jsonParser.currentToken();
 		if ( currentToken==JsonToken.START_OBJECT ) {
 			parseObjectProperties(jsonParser, currentPath);
 		} else if ( currentToken==JsonToken.START_ARRAY ) {
