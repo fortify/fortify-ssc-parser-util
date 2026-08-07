@@ -24,10 +24,7 @@
  ******************************************************************************/
 package com.fortify.util.cache;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * ArrayList wrapper for storing CachedObject values.
@@ -44,21 +41,22 @@ import org.slf4j.LoggerFactory;
  */
 public class CachedObjectArrayList<V> extends ArrayList<CachedObject<V>> {
     private static final long serialVersionUID = 1L;
-    private static final Logger LOG = LoggerFactory.getLogger(CachedObjectArrayList.class);
 
     /**
      * Get object from cached list, unwrapping via getOrReload().
      * 
      * @param index Index to retrieve
      * @return Unwrapped object
-     * @throws IndexOutOfBoundsException if index out of range
-     * @throws IOException               if reload fails
+     * @throws CacheEntryNotFoundException  if index is out of range or the entry is null
+     * @throws CacheEntryReloadException    if a garbage-collected entry cannot be reloaded
      */
-    public V getCachedObject(int index) throws IOException {
+    public V getCachedObject(int index) {
+        if (index < 0 || index >= size()) {
+            throw new CacheEntryNotFoundException("Index " + index + " out of bounds for cache of size " + size());
+        }
         CachedObject<V> cached = get(index);
         if (cached == null) {
-            LOG.debug("Cached object is null at index {}", index);
-            return null;
+            throw new CacheEntryNotFoundException("Cache entry at index " + index + " is null");
         }
         return cached.getOrReload();
     }

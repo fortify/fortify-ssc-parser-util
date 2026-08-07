@@ -138,7 +138,7 @@ public class CachedObject<T> {
      * @return The deserialized object
      * @throws IOException if re-parsing fails
      */
-    public T getOrReload() throws IOException {
+    public T getOrReload() {
         // Fast path: Is object in memory?
         if (cachedObjectRef != null) {
             T obj = cachedObjectRef.get();
@@ -163,9 +163,11 @@ public class CachedObject<T> {
      * @return Re-deserialized object
      * @throws IOException on parse failure
      */
-    private T reloadFromRegion() throws IOException {
+    private T reloadFromRegion() {
         try (InputStream regionStream = new RegionInputStream(sourceInputStream, region, false)) {
             return objectMapper.readValue(regionStream, objectClass);
+        } catch (IOException e) {
+            throw new CacheEntryReloadException("Unable to reload garbage-collected data from original input", e);
         }
     }
 

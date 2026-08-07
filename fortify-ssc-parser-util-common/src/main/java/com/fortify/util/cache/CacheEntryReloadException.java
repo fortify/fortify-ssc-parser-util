@@ -24,38 +24,13 @@
  ******************************************************************************/
 package com.fortify.util.cache;
 
-import java.util.HashMap;
-
 /**
- * HashMap wrapper for storing CachedObject values.
- * 
- * Provides transparent access to cached objects without exposing
- * CachedObject in the collection type signature.
- * 
- * **Key principle**: Callers remain responsible for creating and putting
- * CachedObject instances. This class only simplifies the get operation.
- * 
- * @author Sangamesh Vijaykumar
- * 
- * @param <K> Key type
- * @param <V> Value type (the unwrapped object, not CachedObject)
+ * Thrown when a garbage-collected cache entry cannot be reloaded from its source region.
  */
-public class CachedObjectHashMap<K, V> extends HashMap<K, CachedObject<V>> {
+public class CacheEntryReloadException extends CacheEntryException {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Get object from cached map, unwrapping via getOrReload().
-     *
-     * @param key Key to look up
-     * @return Unwrapped object
-     * @throws CacheEntryNotFoundException  if no entry exists for the given key
-     * @throws CacheEntryReloadException    if a garbage-collected entry cannot be reloaded
-     */
-    public V getCachedObject(K key) {
-        CachedObject<V> cached = get(key);
-        if (cached == null) {
-            throw new CacheEntryNotFoundException("No cache entry for key: " + key);
-        }
-        return cached.getOrReload();
+    public CacheEntryReloadException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
