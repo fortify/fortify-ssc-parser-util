@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/fortify/fortify-ssc-parser-util/compare/v3.0.0...v3.0.1) (2026-08-07)
+
+
+### Bug Fixes
+
+* Improve error/exception handling consistency ([fcae74d](https://github.com/fortify/fortify-ssc-parser-util/commit/fcae74df35ee0690bc15813a0491b3ac03fcc80c))
+
 ## [3.0.0](https://github.com/fortify/fortify-ssc-parser-util/compare/v2.1.1...v3.0.0) (2026-08-06)
 
 
