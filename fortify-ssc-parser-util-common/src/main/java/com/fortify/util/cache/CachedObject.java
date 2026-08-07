@@ -136,7 +136,7 @@ public class CachedObject<T> {
      * This method is transparent - callers always get the object.
      * 
      * @return The deserialized object
-     * @throws IOException if re-parsing fails
+     * @throws CacheEntryReloadException if the garbage-collected entry cannot be reloaded from its source region
      */
     public T getOrReload() {
         // Fast path: Is object in memory?
@@ -161,7 +161,7 @@ public class CachedObject<T> {
      * then ObjectMapper to deserialize.
      * 
      * @return Re-deserialized object
-     * @throws IOException on parse failure
+     * @throws CacheEntryReloadException if deserialization from the source region fails
      */
     private T reloadFromRegion() {
         try (InputStream regionStream = new RegionInputStream(sourceInputStream, region, false)) {
