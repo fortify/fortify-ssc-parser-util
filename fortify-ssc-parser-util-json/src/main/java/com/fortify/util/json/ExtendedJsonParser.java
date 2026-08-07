@@ -79,7 +79,7 @@ public class ExtendedJsonParser extends JsonParserDelegate {
 	 */
 	public final void assertToken(Set<JsonToken> expectedTokens) throws IOException {
 		if (!expectedTokens.contains(currentToken())) {
-			throw new IOException(String.format("Expected one of %s at %s", expectedTokens, getTokenLocation()));
+			throw new IOException(String.format("Expected one of %s at %s", expectedTokens, currentTokenLocation()));
 		}
 	}
 	
@@ -130,9 +130,9 @@ public class ExtendedJsonParser extends JsonParserDelegate {
 		assertStartObjectOrArray();
 		// TODO Do we need to take into account file encoding to determine number of bytes
 		//      for the '[' character?
-		long start = getCurrentLocation().getByteOffset()-"[".getBytes().length; 
+		long start = currentLocation().getByteOffset()-"[".getBytes().length; 
 		skipChildren();
-		long end = getCurrentLocation().getByteOffset();
+		long end = currentLocation().getByteOffset();
 		return new Region(start, end);
 	}
 }

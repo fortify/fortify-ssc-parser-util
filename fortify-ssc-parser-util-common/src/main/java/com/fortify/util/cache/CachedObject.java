@@ -112,13 +112,13 @@ public class CachedObject<T> {
     public static <T> CachedObject<T> parse(JsonParser jp, Class<T> type,
             InputStream sourceInputStream, ObjectMapper objectMapper) throws IOException {
         // Phase 1: Capture byte position BEFORE parsing
-        long startPosition = jp.getCurrentLocation().getByteOffset();
+        long startPosition = jp.currentLocation().getByteOffset();
 
         // Phase 2: Parse object (single deserialize pass)
         T object = jp.readValueAs(type);
 
         // Phase 3: Capture byte position AFTER parsing
-        long endPosition = jp.getCurrentLocation().getByteOffset();
+        long endPosition = jp.currentLocation().getByteOffset();
 
         // Phase 4: Create Region
         Region region = new Region(startPosition, endPosition);
@@ -136,9 +136,9 @@ public class CachedObject<T> {
      * This method is transparent - callers always get the object.
      * 
      * @return The deserialized object
-     * @throws IOException if re-parsing fails
+     * @throws CacheEntryReloadException if the garbage-collected entry cannot be reloaded from its source region
      */
-    public T getOrReload() throws IOException {
+    public T getOrReload() {
         // Fast path: Is object in memory?
         if (cachedObjectRef != null) {
             T obj = cachedObjectRef.get();
@@ -161,11 +161,13 @@ public class CachedObject<T> {
      * then ObjectMapper to deserialize.
      * 
      * @return Re-deserialized object
-     * @throws IOException on parse failure
+     * @throws CacheEntryReloadException if deserialization from the source region fails
      */
-    private T reloadFromRegion() throws IOException {
+    private T reloadFromRegion() {
         try (InputStream regionStream = new RegionInputStream(sourceInputStream, region, false)) {
             return objectMapper.readValue(regionStream, objectClass);
+        } catch (IOException e) {
+            throw new CacheEntryReloadException("Unable to reload garbage-collected data from original input", e);
         }
     }
 

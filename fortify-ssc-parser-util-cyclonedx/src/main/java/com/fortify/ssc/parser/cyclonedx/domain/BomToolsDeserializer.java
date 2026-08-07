@@ -54,7 +54,7 @@ public final class BomToolsDeserializer extends JsonDeserializer<BomTool[]> {
             List<BomTool> tools = new ArrayList<>();
             
             while (p.nextToken() != JsonToken.END_OBJECT) {
-                String fieldName = p.getCurrentName();
+                String fieldName = p.currentName();
                 p.nextToken();
                 
                 if ("components".equals(fieldName) || "services".equals(fieldName)) {
