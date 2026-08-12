@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fortify.plugin.api.ScanData;
+import com.fortify.plugin.api.ScanEntry;
 import com.fortify.util.io.Region;
 import com.fortify.util.io.RegionInputStream;
 
@@ -59,7 +61,8 @@ public class CachedObject<T> {
     private static final Logger LOG = LoggerFactory.getLogger(CachedObject.class);
 
     private final Region region;
-    private final InputStream sourceInputStream;
+    private final ScanData scanData;
+    private final ScanEntry scanEntry;
     private final ObjectMapper objectMapper;
     private final Class<T> objectClass;
     private SoftReference<T> cachedObjectRef;
@@ -67,17 +70,17 @@ public class CachedObject<T> {
     /**
      * Construct a cached object wrapper.
      * 
-     * @param object            Deserialized object (wrapped in SoftReference)
-     * @param region            Byte range in source file for this object
-     * @param sourceInputStream Source file stream (must stay open for entire parse
-     *                          session)
-     * @param objectMapper      ObjectMapper for re-parsing on GC
-     * @param objectClass       Object class (for re-deserialization)
+     * @param object        Deserialized object (wrapped in SoftReference)
+     * @param region        Byte range in source file for this object
+     * @param streamFactory Supplier that opens a fresh stream for each reload
+     * @param objectMapper  ObjectMapper for re-parsing on GC
+     * @param objectClass   Object class (for re-deserialization)
      */
-    public CachedObject(T object, Region region, InputStream sourceInputStream,
+    public CachedObject(T object, Region region, ScanData scanData, ScanEntry scanEntry,
             ObjectMapper objectMapper, Class<T> objectClass) {
         this.region = region;
-        this.sourceInputStream = sourceInputStream;
+        this.scanData = scanData;
+        this.scanEntry = scanEntry;
         this.objectMapper = objectMapper;
         this.objectClass = objectClass;
         this.cachedObjectRef = new SoftReference<>(object);
@@ -101,16 +104,16 @@ public class CachedObject<T> {
      * artifacts.add(cached);
      * ```
      * 
-     * @param <T>               Object type to parse
-     * @param jp                JsonParser positioned at START_OBJECT
-     * @param type              Class to deserialize to
-     * @param sourceInputStream Source stream (for fallback re-parsing)
-     * @param objectMapper      Jackson ObjectMapper
+     * @param <T>          Object type to parse
+     * @param jp           JsonParser positioned at START_OBJECT
+     * @param type         Class to deserialize to
+     * @param streamFactory Supplier that opens a fresh stream for each reload
+     * @param objectMapper Jackson ObjectMapper
      * @return Wrapped CachedObject with both parsed object and Region
      * @throws IOException on parse failure
      */
     public static <T> CachedObject<T> parse(JsonParser jp, Class<T> type,
-            InputStream sourceInputStream, ObjectMapper objectMapper) throws IOException {
+            ScanData scanData, ScanEntry scanEntry, ObjectMapper objectMapper) throws IOException {
         // Phase 1: Capture byte position BEFORE parsing
         long startPosition = jp.currentLocation().getByteOffset();
 
@@ -124,7 +127,7 @@ public class CachedObject<T> {
         Region region = new Region(startPosition, endPosition);
 
         // Phase 5: Wrap and return
-        return new CachedObject<>(object, region, sourceInputStream, objectMapper, type);
+        return new CachedObject<>(object, region, scanData, scanEntry, objectMapper, type);
     }
 
     /**
@@ -164,7 +167,8 @@ public class CachedObject<T> {
      * @throws CacheEntryReloadException if deserialization from the source region fails
      */
     private T reloadFromRegion() {
-        try (InputStream regionStream = new RegionInputStream(sourceInputStream, region, false)) {
+        try (InputStream src = scanData.getInputStream(scanEntry);
+             InputStream regionStream = new RegionInputStream(src, region, true)) {
             return objectMapper.readValue(regionStream, objectClass);
         } catch (IOException e) {
             throw new CacheEntryReloadException("Unable to reload garbage-collected data from original input", e);
