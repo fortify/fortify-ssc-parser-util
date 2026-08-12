@@ -1,7 +1,6 @@
 package com.fortify.ssc.parser.cyclonedx.parser;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,12 +43,9 @@ public final class VulnerabilitiesParser {
     }
 
     public final void parse() throws ScanParsingException, IOException {
-        // Parse BOM document with InputStream available for CachedObject
-        try (InputStream inputStream = scanData.getInputStream(scanEntry)) {
-            new ScanDataStreamingJsonParser()
-                    .handler("/", jp -> parseBom(jp, inputStream))
-                    .parse(scanData, scanEntry);
-        }
+        new ScanDataStreamingJsonParser()
+                .handler("/", jp -> parseBom(jp))
+                .parse(scanData, scanEntry);
     }
 
     /**
@@ -60,8 +56,8 @@ public final class VulnerabilitiesParser {
      * @param sourceInputStream InputStream for CachedObject byte range extraction
      * @throws IOException on parse failure
      */
-    public final void parseBom(ExtendedJsonParser jsonParser, InputStream sourceInputStream) throws IOException {
-        Bom bom = Bom.parseBom(jsonParser, sourceInputStream, objectMapper);
+    public final void parseBom(ExtendedJsonParser jsonParser) throws IOException {
+        Bom bom = Bom.parseBom(jsonParser, scanData, scanEntry, objectMapper);
         parseVulnerabilities(bom);
     }
 

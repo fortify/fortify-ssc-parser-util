@@ -40,6 +40,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fortify.plugin.api.ScanData;
+import com.fortify.plugin.api.ScanEntry;
 import com.fortify.util.cache.CachedObject;
 import com.fortify.util.cache.CachedObjectHashMap;
 import com.fortify.util.io.Region;
@@ -97,15 +99,15 @@ public final class Bom implements Serializable {
      * @return Parsed BOM with cached components
      * @throws IOException on parse failure
      */
-    public static final Bom parseBom(ExtendedJsonParser jsonParser, InputStream sourceInputStream,
-            ObjectMapper objectMapper) throws IOException {
+    public static final Bom parseBom(ExtendedJsonParser jsonParser, ScanData scanData,
+            ScanEntry scanEntry, ObjectMapper objectMapper) throws IOException {
         Bom bom = new Bom();
         StreamingJsonParser streamingParser = new StreamingJsonParser()
                 .handler("/bomFormat", BomFormat.class, bom::setBomFormat)
                 .handler("/specVersion", String.class, bom::setSpecVersion)
                 .handler("/metadata", BomMetadata.class, bom::setMetadata)
                 .handler("/vulnerabilities", bom::setVulnerabilitiesRegion)
-                .handler("/components/*", jp -> bom.setComponentCached(jp, sourceInputStream, objectMapper));
+                .handler("/components/*", jp -> bom.setComponentCached(jp, scanData, scanEntry, objectMapper));
         streamingParser.parseObjectProperties(jsonParser, "/");
         return bom;
     }
@@ -118,11 +120,11 @@ public final class Bom implements Serializable {
      * @param objectMapper      ObjectMapper for deserialization
      * @throws IOException on parse failure
      */
-    private final void setComponentCached(JsonParser jp, InputStream sourceInputStream,
+    private final void setComponentCached(JsonParser jp, ScanData scanData, ScanEntry scanEntry,
             ObjectMapper objectMapper) throws IOException {
         try {
             CachedObject<Component> cached = CachedObject.parse(
-                    jp, Component.class, sourceInputStream, objectMapper);
+                    jp, Component.class, scanData, scanEntry, objectMapper);
             Component component = cached.getOrReload();
             componentsByBomRef.put(component.getBomRef(), cached);
             LOG.trace("Added cached component: bomRef={}, cache_status={}",
