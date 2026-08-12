@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/fortify/fortify-ssc-parser-util/compare/v3.0.1...v3.0.2) (2026-08-12)
+
+
+### Bug Fixes
+
+* Fix input stream handling for cached objects ([#38](https://github.com/fortify/fortify-ssc-parser-util/issues/38)) ([bc29006](https://github.com/fortify/fortify-ssc-parser-util/commit/bc29006ad0f4b427841ef4044aa863f1d00aa402))
+
 ## [3.0.1](https://github.com/fortify/fortify-ssc-parser-util/compare/v3.0.0...v3.0.1) (2026-08-07)
 
 
