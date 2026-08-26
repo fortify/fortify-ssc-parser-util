@@ -9,14 +9,14 @@ javaPlatform {
 }
 
 dependencies {
-	api platform('com.fasterxml.jackson:jackson-bom:2.19.4')
+	api platform('com.fasterxml.jackson:jackson-bom:2.22.2')
 		
 	constraints {
 		api 'org.slf4j:slf4j-api:2.0.18'
-		api 'com.fortify.plugin:plugin-api:1.0.1.1'
-		api 'com.fasterxml.woodstox:woodstox-core:7.0.4'
+		api 'com.fortify.plugin:plugin-api:1.2.2320.0'
+		api 'com.fasterxml.woodstox:woodstox-core:7.2.2'
 		api 'org.apache.commons:commons-lang3:3.20.0'
-		api 'commons-codec:commons-codec:1.22.0'
+		api 'commons-codec:commons-codec:1.22.1'
 		api 'commons-io:commons-io:2.22.0'
 		
 		api "com.fortify.ssc.parser.util:fortify-ssc-parser-util-common:${project.version}"
