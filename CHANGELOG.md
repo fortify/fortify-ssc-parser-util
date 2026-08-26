@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.3](https://github.com/fortify/fortify-ssc-parser-util/compare/v3.0.2...v3.0.3) (2026-08-26)
+
+
+### Bug Fixes
+
+* Upgrade dependencies ([9e09ebe](https://github.com/fortify/fortify-ssc-parser-util/commit/9e09ebebcd8b2899b85e5930edd45d3a9c3f1c04))
+
 ## [3.0.2](https://github.com/fortify/fortify-ssc-parser-util/compare/v3.0.1...v3.0.2) (2026-08-12)
 
 
