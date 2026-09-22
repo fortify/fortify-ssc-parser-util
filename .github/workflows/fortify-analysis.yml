@@ -15,5 +15,5 @@ jobs:
       contents: read
       actions: read
       security-events: write
-    uses: fortify/.github/.github/workflows/fortify-analysis.yml@main
+    uses: fortify/shared-github/.github/workflows/reusable-fortify-analysis.yml@5ad1afec0f56a21b03f0887eea35505cb6a66554
     secrets: inherit
