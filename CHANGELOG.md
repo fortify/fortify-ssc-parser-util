@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.4](https://github.com/fortify/fortify-ssc-parser-util/compare/v3.0.3...v3.0.4) (2026-11-20)
+
+
+### Bug Fixes
+
+* Properly handle ratings without severity instead of throwing a `NullPointerException` ([#41](https://github.com/fortify/fortify-ssc-parser-util/issues/41)) ([1a2fda8](https://github.com/fortify/fortify-ssc-parser-util/commit/1a2fda8f279785624150fab1bc68767c28658e59))
+
 ## [3.0.3](https://github.com/fortify/fortify-ssc-parser-util/compare/v3.0.2...v3.0.3) (2026-08-26)
 
 
